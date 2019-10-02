@@ -1,10 +1,9 @@
-import React from 'react'
-import { Form } from 'semantic-ui-react'
+import React from "react";
+import { Form } from "semantic-ui-react";
 
-const selectData = () => {
-  const filterReport = () => alert('filtro!!')
+const selectData = ({ actionReport }) => {
   return (
-    <Form onSubmit={filterReport}>
+    <Form onSubmit={() => actionReport()}>
       <Form.Group widths="equal">
         <Form.Input label="Da data" type="date" name="dateFrom"></Form.Input>
         <Form.Input label="A data" type="date" name="dateTo"></Form.Input>
@@ -13,7 +12,7 @@ const selectData = () => {
         <Form.Button type="submit">Genera Report</Form.Button>
       </Form.Group>
     </Form>
-  )
-}
+  );
+};
 
-export default selectData
+export default selectData;
