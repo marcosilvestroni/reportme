@@ -1,7 +1,7 @@
 const testConnection = src => {
-  return fetch(src).then(response => response.json())
-}
+  return fetch(src).then(response => response.json());
+};
 
 export const getFatture = () => {
-  return testConnection('http://localhost:3001/fatture')
-}
+  return testConnection("http://localhost:3001/fatture");
+};

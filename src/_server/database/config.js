@@ -1,35 +1,36 @@
-const sql = require('mssql')
+const sql = require("mssql");
 
-const Registry = require('winreg')
+const Registry = require("winreg");
 const regKey = new Registry({
   hive: Registry.HKCU,
-  key: '\\Software\\Anthos\\Method\\4.0\\Generale',
-})
+  key: "\\Software\\Anthos\\Method\\4.0\\Generale"
+});
 
-let serverName = ''
+let serverName = "";
 //todo USE Regkey
 regKey.values((err, items) => {
-  if (err) return
+  if (err) return;
   else
     items.forEach(elm => {
-      if (elm.name == 'path') serverName = elm.value
-    })
-})
+      if (elm.name === "path") serverName = elm.value;
+    });
+});
 
 const config = {
-  user: 'sa',
-  password: 'startup',
-  server: serverName || '192.168.1.132',
-  database: 'DB1_01',
+  user: "sa",
+  password: "startup",
+  server: serverName || "192.168.43.164",
+  database: "DB1_01",
   options: {
-    instanceName: 'MSSQLSERVER',
-    tdsVersion: '7_1',
-  },
-}
-const conn = new sql.ConnectionPool(config)
-const reqSql = new sql.Request(conn)
+    instanceName: "MSSQLSERVER",
+    tdsVersion: "7_1"
+  }
+};
+const conn = new sql.ConnectionPool(config);
+const reqSql = new sql.Request(conn);
 
 module.exports = {
   conn: conn,
   reqSql: reqSql,
-}
+  serverName: serverName
+};

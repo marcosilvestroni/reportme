@@ -9,12 +9,12 @@ const MenuCustom = ({ children }) => {
 
   return (
     <Grid>
-      <Grid.Column width={4}>
+      <Grid.Column width={2}>
         <Menu fluid vertical tabular>
           <Menu.Item
             name="Reportistica"
-            active={active === "reportPeriod"}
-            onClick={() => setActive("reportPeriod")}
+            active={active === "report"}
+            onClick={() => setActive("report")}
           />
           <Menu.Item
             name="Esportazione"

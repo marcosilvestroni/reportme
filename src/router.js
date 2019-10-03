@@ -1,10 +1,10 @@
-import React from 'react'
-import ExportReport from './view/exportReport'
-import ReportPeriod from './view/reportPeriod'
+import React from "react";
+import Export from "./view/exportReport";
+import Report from "./view/reportPeriod";
 
 const router = {
-  reportPeriod: <ReportPeriod />,
-  export: <ExportReport />,
-}
+  report: <Report />,
+  export: <Export />
+};
 
-export default router
+export default router;

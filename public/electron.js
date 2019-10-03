@@ -13,7 +13,6 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
-    frame: false,
     titleBarStyle: "hidden"
   });
   mainWindow.loadURL(

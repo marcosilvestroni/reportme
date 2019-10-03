@@ -7,15 +7,7 @@ import fastcsv from "fast-csv";
 import fs from "fs";
 
 const filterAccounting = () => {
-  getFatture().then(res => {
-    console.log("fatture");
-    const data = res.recordset;
-    const csvStream = fastcsv.format({ headers: true });
-    //csvStream.pipe(process.stdout);
-    csvStream.write(data);
-    csvStream.on("end", () => console.log("ended"));
-    fs.write(path.join(__dirname, "out.txt", "mytest"));
-  });
+  getFatture().then(res => {});
 };
 
 const exportReport = () => {
