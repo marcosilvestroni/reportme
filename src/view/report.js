@@ -1,8 +1,6 @@
 import React from "react";
-import { getFatture } from "../api";
 import AccontingTable from "../components/AccontingTable";
 import PropTypes from "prop-types";
-import { Header } from "semantic-ui-react";
 import Filters from "../components/Filters";
 
 export default class reportPeriod extends React.Component {

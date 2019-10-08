@@ -7,12 +7,15 @@ const path = require("path");
 const url = require("url");
 const isDev = require("electron-is-dev");
 
+let { fork } = require("child_process");
+let serverProcess = fork(__dirname + "/../src/_server/index.js");
+
 let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
+    width: 1024,
+    height: 768,
     titleBarStyle: "hidden"
   });
   mainWindow.loadURL(
@@ -22,10 +25,6 @@ function createWindow() {
   );
   mainWindow.on("closed", () => (mainWindow = null));
   //mainWindow.maximize();
-  if (!isDev) {
-    const { exec } = childProcess;
-    exec("yarn server");
-  }
 }
 
 app.on("ready", createWindow);

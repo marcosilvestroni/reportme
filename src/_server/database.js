@@ -19,6 +19,7 @@ class databaseAPI extends DataSource {
 
   async getAllFatture() {
     const found = await db.query(queries.fatture);
+    // eslint-disable-next-line no-unused-vars
     const [results, meta] = found;
     return results && results.length ? results : [];
   }
