@@ -1,6 +1,6 @@
 import React from "react";
-import Export from "./view/exportReport";
-import Report from "./view/reportPeriod";
+import Export from "./view/export";
+import Report from "./view/report";
 
 const router = {
   report: <Report />,

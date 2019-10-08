@@ -1,7 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Header from './header'
-import Menu from './menu'
+import React from "react";
+import PropTypes from "prop-types";
+import Header from "./header";
+import Menu from "./menu";
+import "semantic-ui-css/semantic.min.css";
 
 const Layout = ({ children }) => {
   return (
@@ -9,11 +10,11 @@ const Layout = ({ children }) => {
       <Header />
       <Menu>{children}</Menu>
     </div>
-  )
-}
+  );
+};
 
 Layout.propTypes = {
-  children: PropTypes.node,
-}
+  children: PropTypes.node
+};
 
-export default Layout
+export default Layout;
