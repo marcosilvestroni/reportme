@@ -1,10 +1,11 @@
 import React from "react";
 //import PropTypes from 'prop-types'
-import { Header } from "semantic-ui-react";
+import { Header, Icon } from "semantic-ui-react";
 
 const HeaderCustom = () => {
   return (
-    <Header as="h1" textAlign="center">
+    <Header as="h3" icon textAlign='center'>
+      <Icon name="chart line"  circular/>
       ReportMe
     </Header>
   );

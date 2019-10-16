@@ -1,21 +1,22 @@
 const electron = require("electron");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const childProcess = require("child_process");
+const os = require("os");
 
 const path = require("path");
-const url = require("url");
-const isDev = require("electron-is-dev");
 
-let { fork } = require("child_process");
-let serverProcess = fork(__dirname + "/../src/_server/index.js");
+const isDev = require("electron-is-dev");
+if (1===2) {
+  let { fork } = require("child_process");
+  fork(__dirname + "/../src/_server/index.js");
+}
 
 let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 768,
+    width: 1200,
+    height: 1080,
     titleBarStyle: "hidden"
   });
   mainWindow.loadURL(
@@ -25,6 +26,14 @@ function createWindow() {
   );
   mainWindow.on("closed", () => (mainWindow = null));
   //mainWindow.maximize();
+
+  //react dev tools
+  BrowserWindow.addDevToolsExtension(
+    path.join(
+      os.homedir(),
+      "/.config/chromium/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.0_0"
+    )
+  );
 }
 
 app.on("ready", createWindow);

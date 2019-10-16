@@ -1,33 +1,30 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Grid, Menu, Segment } from "semantic-ui-react";
+import {  Menu } from "semantic-ui-react";
 
 import router from "../router";
 
 const MenuCustom = ({ children }) => {
-  const [active, setActive] = useState("export");
+  const [active, setActive] = useState("report");
 
   return (
-    <Grid>
-      <Grid.Column width={2}>
-        <Menu fluid vertical tabular>
-          <Menu.Item
-            name="Reportistica"
-            active={active === "report"}
-            onClick={() => setActive("report")}
-          />
-          <Menu.Item
-            name="Esportazione"
-            active={active === "export"}
-            onClick={() => setActive("export")}
-          />
-        </Menu>
-      </Grid.Column>
+    <div>
+      <Menu pointing secondary>
+        <Menu.Item
+          name="Reportistica"
+          active={active === "report"}
+          onClick={() => setActive("report")}
+        />
+        <Menu.Item
+          name="Esportazione"
+          active={active === "export"}
+          onClick={() => setActive("export")}
+          disabled
+        />
+      </Menu>
 
-      <Grid.Column stretched width={12}>
-        <Segment>{router[active]}</Segment>
-      </Grid.Column>
-    </Grid>
+      {router[active]}
+    </div>
   );
 };
 

@@ -26,17 +26,15 @@ const createStore = () => {
     TITOLO: SQL.STRING
   });
 
-  /* const fatture = db.define("fatture", {
-    MED_ID: {
+  const pagamenti = db.define("cgxx_conti_pag_v1", {
+    CDA_CONTO: {
       type: SQL.STRING,
       primaryKey: true
     },
-    COGNOME: SQL.STRING,
-    NOME: SQL.STRING,
-    TITOLO: SQL.STRING
+    DES_CONTO: SQL.STRING,
   });
- */
-  return { medici };
+
+   return { medici, pagamenti };
 };
 
 module.exports = {

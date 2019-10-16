@@ -1,32 +1,92 @@
-import React from "react";
-import AccontingTable from "../components/AccontingTable";
-import PropTypes from "prop-types";
-import Filters from "../components/Filters";
+import React, { useState } from "react";
+import AccontingTable from "../components/accontingTable";
+import { Segment, Button } from "semantic-ui-react";
+//import PropTypes from "prop-types";
+import Filters from "../components/filters";
+import { useQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 
-export default class reportPeriod extends React.Component {
-  static propTypes = {
-    prop: PropTypes.object
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: []
-    };
+export const FATTURE_DATA = gql`
+  query fatture(
+    $after: String
+    $medico: String
+    $pagamento: String
+    $tipo: String
+    $fromDate: Float
+    $toDate: Float
+  ) {
+    fatture(
+      after: $after
+      medico: $medico
+      pagamento: $pagamento
+      tipo: $tipo
+      fromDate: $fromDate
+      toDate: $toDate
+    ) {
+      fatture {
+        _id
+        NUM_FATTURA
+        DATA_FATTURA
+        TIPO_FATTURA
+        COGNOME
+        NOME
+        COGNOME_MEDICO
+        NOME_MEDICO
+        TOTALE
+        PAG_DESC
+      }
+      cursor
+      hasMore
+      meta {
+        totalCount
+        totalAmount
+        totalTaxes
+        totalStamps
+        totalServices
+      }
+    }
   }
+`;
 
-  componentDidMount() {
-    //getFatture().then(res => this.setState({ data: res.recordset }));
-  }
+export default () => {
+  const [filters, updateFilters] = useState({});
+  const { data, loading, error, fetchMore } = useQuery(FATTURE_DATA, {
+    variables: filters
+  });
 
-  render() {
-    const { data } = this.state;
+  if (error) return <p>ERROR : {error.message}</p>;
 
-    return (
-      <div>
-        <Filters />
-        {data.length > 0 && <AccontingTable data={data} />}
-      </div>
-    );
-  }
-}
+  return (
+    <Segment loading={loading}>
+      <Filters update={updateFilters} />
+      {data && <AccontingTable data={data.fatture.fatture} />}
+      {data && data.fatture && data.fatture.hasMore && (
+        <Button
+          onClick={() =>
+            fetchMore({
+              variables: {
+                after: data.fatture.cursor
+              },
+
+              updateQuery: (prev, { fetchMoreResult, ...rest }) => {
+                if (!fetchMoreResult) return prev;
+                return {
+                  ...fetchMoreResult,
+                  fatture: {
+                    ...fetchMoreResult.fatture,
+                    fatture: [
+                      ...prev.fatture.fatture,
+                      ...fetchMoreResult.fatture.fatture
+                    ]
+                  }
+                };
+              }
+            })
+          }
+        >
+          Visualizza altri documenti
+        </Button>
+      )}
+    </Segment>
+  );
+};
