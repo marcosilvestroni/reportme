@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 //import PropTypes from "prop-types";
-import { Form, Header, Segment, Divider } from "semantic-ui-react";
+import { Form, Header, Divider, Button } from "semantic-ui-react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -16,6 +16,10 @@ export const FILTERS_DATA = gql`
       CDA_CONTO
       DES_CONTO
     }
+    tipoDocumenti {
+      CDA_MODULO
+      DES_MODULO
+    }
   }
 `;
 
@@ -25,40 +29,96 @@ const Filters = ({ update }) => {
 
   if (error) return <p>ERROR : {error.message}</p>;
 
+  if (loading) return <p>LOADING</p>;
+
   const applyFilters = () => {
-    console.log(filters)
     update(filters);
   };
   const resetFilters = () => {
-    setFilters({})
+    setFilters({});
     update({});
   };
 
   const handleChange = (e, { name, value }) => {
-    let updateVal = value
-    if (['fromDate', 'toDate'].includes(name)) {
-      const dateVal = new Date(value)
-      updateVal = dateVal.getTime()
+    let updateVal = value;
+    if (["fromDate", "toDate"].includes(name)) {
+      const dateVal = new Date(value);
+      updateVal = dateVal.getTime();
     }
     setFilters({ ...filters, [name]: updateVal });
   };
 
+  const parseForDateInput = val => {
+    if (val) {
+      const dt = new Date(val);
+      return dt && dt.toISOString().split("T")[0];
+    }
+  };
+
+  const applyPresetDates = preset => {
+    const dt = new Date();
+    const withPreset = {
+      today: () => {
+        setFilters({
+          ...filters,
+          fromDate: dt.getTime(),
+          toDate: dt.getTime()
+        });
+      },
+      lastMonth: () => {
+        const from = new Date();
+        from.setMonth(from.getMonth() - 1);
+        setFilters({
+          ...filters,
+          fromDate: from.getTime(),
+          toDate: dt.getTime()
+        });
+      },
+      lastThreeMonths: () => {
+        const from = new Date();
+        from.setMonth(from.getMonth() - 3);
+        setFilters({
+          ...filters,
+          fromDate: from.getTime(),
+          toDate: dt.getTime()
+        });
+      }
+    };
+
+    withPreset[preset]();
+  };
+
   return (
-    <Segment loading={loading}>
-      <Header tag="h3">Filtri</Header>
+    <div>
+      <Header tag="h3">Selezione</Header>
+      <Divider />
       <Form id="filters" loading={loading}>
+        <Form.Group>
+          <Button.Group widths="3" basic>
+            <Button onClick={() => applyPresetDates("today")}>Oggi</Button>
+            <Button onClick={() => applyPresetDates("lastMonth")}>
+              Ultimo Mese
+            </Button>
+            <Button onClick={() => applyPresetDates("lastThreeMonths")}>
+              Ultimo Trimetre
+            </Button>
+          </Button.Group>
+        </Form.Group>
+
         <Form.Group widths={2}>
           <Form.Input
             label="Da data"
             type="date"
             name="fromDate"
             onChange={handleChange}
+            defaultValue={parseForDateInput(filters.fromDate)}
           ></Form.Input>
           <Form.Input
             label="A data"
             type="date"
             name="toDate"
             onChange={handleChange}
+            defaultValue={parseForDateInput(filters.toDate)}
           ></Form.Input>
         </Form.Group>
         <Form.Group widths={2}>
@@ -75,16 +135,26 @@ const Filters = ({ update }) => {
                 }))
               }
               onChange={handleChange}
+              defaultValue={filters.medico}
+              value={filters.medico ? filters.medico : ""}
+              clearable
             ></Form.Select>
           )}
           <Form.Select
             label="Tipo"
             name="tipo"
-            options={[
-              { value: "FATIMM", text: "Fattura Immediata" },
-              { value: "ACCONT", text: "Fattura Acconto" }
-            ]}
+            options={
+              data.tipoDocumenti &&
+              data.tipoDocumenti.map(({ CDA_MODULO, DES_MODULO }) => ({
+                key: CDA_MODULO,
+                value: CDA_MODULO,
+                text: `${DES_MODULO}`
+              }))
+            }
             onChange={handleChange}
+            defaultValue={filters.tipo}
+            value={filters.tipo ? filters.tipo : ""}
+            clearable
           ></Form.Select>
         </Form.Group>
         <Form.Group widths={2}>
@@ -101,16 +171,24 @@ const Filters = ({ update }) => {
                 }))
               }
               onChange={handleChange}
+              defaultValue={filters.pagamento}
+              value={filters.pagamento ? filters.pagamento : ""}
+              clearable
             ></Form.Select>
           )}
-          <Form.Group widths={2}>
-          <Divider />
-            <Form.Button onClick={applyFilters}>Applica filtri</Form.Button>
-            <Form.Button onClick={resetFilters}>Reset filtri</Form.Button>
-          </Form.Group>
+        </Form.Group>
+        <Form.Group>
+          <Button.Group widths="2">
+            <Button size="large" secondary onClick={resetFilters}>
+              Reset filtri
+            </Button>
+            <Button size="large" primary onClick={applyFilters}>
+              Applica filtri
+            </Button>
+          </Button.Group>
         </Form.Group>
       </Form>
-    </Segment>
+    </div>
   );
 };
 

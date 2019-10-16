@@ -34,7 +34,15 @@ const createStore = () => {
     DES_CONTO: SQL.STRING,
   });
 
-   return { medici, pagamenti };
+  const tipoDocumenti = db.define("caxx_tipo_documento", {
+    CDA_MODULO: {
+      type: SQL.STRING,
+      primaryKey: true
+    },
+    DES_MODULO: SQL.STRING,
+  });
+
+   return { medici, pagamenti, tipoDocumenti };
 };
 
 module.exports = {

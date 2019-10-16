@@ -13,6 +13,7 @@ module.exports = gql`
       toDate: Float
     ): FattureConnection!
     pagamenti: [Pagamenti]!
+    tipoDocumenti: [TipoDocumenti]!
   }
   type Medici {
     MED_ID: ID!
@@ -61,9 +62,13 @@ module.exports = gql`
 
   type MetaFatture {
     totalCount: Int
-    totalAmount: Int
-    totalTaxes: Int
-    totalStamps: Int
-    totalServices: Int
+    totalAmount: Float
+    totalTaxes: Float
+    totalStamps: Float
+    totalServices: Float
+  }
+  type TipoDocumenti {
+    CDA_MODULO: String
+    DES_MODULO: String
   }
 `;

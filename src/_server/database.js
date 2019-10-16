@@ -43,6 +43,12 @@ class databaseAPI extends DataSource {
 
     return found && found.length ? found : [];
   }
+
+  async getAllTipoDocumenti() {
+    const found = await this.store.tipoDocumenti.findAll();
+
+    return found && found.length ? found : [];
+  }
 }
 
 module.exports = databaseAPI;

@@ -10,7 +10,7 @@ module.exports = {
     },
     fatture: (
       _,
-      { pageSize = 20, after, medico, pagamento, tipo, formDate, toDate },
+      { pageSize = 20, after, medico, pagamento, tipo, fromDate, toDate },
       { dataSources }
     ) => {
       return dataSources.databaseAPI.getAllFatture().then(results => {
@@ -18,8 +18,11 @@ module.exports = {
           return dataset.filter(check);
         };
         let allFatture = applyFilter(results, doc => true);
-        let totalCount, totalAmount, totalTaxes, totalStamps, totalServices;
-         console.log(formDate, toDate)
+        let totalCount = 0,
+          totalAmount = 0,
+          totalTaxes = 0,
+          totalStamps = 0,
+          totalServices = 0;
 
         allFatture = medico
           ? allFatture.filter(doc => doc.MED_ID === medico)
@@ -30,11 +33,10 @@ module.exports = {
         allFatture = tipo
           ? allFatture.filter(doc => doc.TIPO_FATTURA === tipo)
           : allFatture;
-        allFatture = formDate
+        allFatture = fromDate
           ? allFatture.filter(doc => {
-            const dt = new Date(doc.DATA_FATTURA);
-            
-              return dt.getTime() >= formDate;
+              const dt = new Date(doc.DATA_FATTURA);
+              return dt.getTime() >= fromDate;
             })
           : allFatture;
         allFatture = toDate
@@ -43,17 +45,14 @@ module.exports = {
               return dt.getTime() <= toDate;
             })
           : allFatture;
-        
-          allFatture.forEach(doc => {
-            
-            totalAmount = parseInt(totalAmount) + parseInt(doc.TOTALE);
-            totalTaxes += doc.IMPOSTA;
-            totalStamps += doc.BOLLI;
-            totalServices += doc.IMPONIBILE;
-          });
-        totalCount = allFatture.length;
-        
 
+        allFatture.forEach(doc => {
+          totalAmount += doc.TOTALE;
+          totalTaxes += doc.IMPOSTA;
+          totalStamps += doc.BOLLI;
+          totalServices += doc.PRESTAZIONI;
+        });
+        totalCount = allFatture.length;
 
         const fatture = paginateResults({
           after,
@@ -62,9 +61,7 @@ module.exports = {
         });
         return {
           fatture,
-          cursor: fatture.length
-            ? fatture[fatture.length - 1]._id
-            : null,
+          cursor: fatture.length ? fatture[fatture.length - 1]._id : null,
           hasMore: fatture.length
             ? fatture[fatture.length - 1]._id !==
               allFatture[allFatture.length - 1]._id
@@ -80,6 +77,8 @@ module.exports = {
       });
     },
     pagamenti: (_, __, { dataSources }) =>
-      dataSources.databaseAPI.getAllPagamenti()
+      dataSources.databaseAPI.getAllPagamenti(),
+    tipoDocumenti: (_, __, { dataSources }) =>
+      dataSources.databaseAPI.getAllTipoDocumenti()
   }
 };
