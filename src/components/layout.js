@@ -3,13 +3,14 @@ import PropTypes from "prop-types";
 import Header from "./header";
 import Menu from "./menu";
 import "semantic-ui-css/semantic.min.css";
+import { Segment } from "semantic-ui-react";
 
 const Layout = ({ children }) => {
   return (
-    <div>
+    <Segment>
       <Header />
       <Menu>{children}</Menu>
-    </div>
+    </Segment>
   );
 };
 

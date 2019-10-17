@@ -1,34 +1,61 @@
 const electron = require("electron");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const childProcess = require("child_process");
+const os = require("os");
 
 const path = require("path");
-const url = require("url");
+
 const isDev = require("electron-is-dev");
+
+if (isDev) {
+  let { fork } = require("child_process");
+  const forked = fork(__dirname + "/../src/_server/index.js");
+}
 
 let mainWindow;
 
+const { ipcMain } = electron;
+ipcMain.on("close-app", () => {
+  mainWindow.close();
+});
+ipcMain.on("min-app", () => {
+  mainWindow.minimize();
+});
+ipcMain.on("max-app", () => {
+  mainWindow.maximize();
+});
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
-    titleBarStyle: "hidden"
+    width: 1200,
+    height: 1080,
+    frame: false,
+    webPreferences: {
+      preload: __dirname + "/preload.js"
+    }
   });
+
   mainWindow.loadURL(
     isDev
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
   mainWindow.on("closed", () => (mainWindow = null));
-  //mainWindow.maximize();
-  if (!isDev) {
-    const { exec } = childProcess;
-    exec("yarn server");
+
+  //react dev tools
+  if (isDev) {
+    BrowserWindow.addDevToolsExtension(
+      path.join(
+        os.homedir(),
+        "/.config/chromium/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.0_0"
+      )
+    );
   }
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

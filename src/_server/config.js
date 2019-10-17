@@ -1,5 +1,3 @@
-const sql = require("mssql");
-
 const Registry = require("winreg");
 const regKey = new Registry({
   hive: Registry.HKCU,
@@ -16,7 +14,7 @@ regKey.values((err, items) => {
     });
 });
 
-const config = {
+module.exports = {
   user: "sa",
   password: "startup",
   server: serverName || "192.168.43.164",
@@ -25,12 +23,4 @@ const config = {
     instanceName: "MSSQLSERVER",
     tdsVersion: "7_1"
   }
-};
-const conn = new sql.ConnectionPool(config);
-const reqSql = new sql.Request(conn);
-
-module.exports = {
-  conn: conn,
-  reqSql: reqSql,
-  serverName: serverName
 };

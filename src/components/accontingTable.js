@@ -1,6 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Table, Divider, Header } from "semantic-ui-react";
+import { parseCurrency } from './utils'
+
+const toDate = (timeStamp) => {
+  const d = new Date(parseInt(timeStamp))
+  return d.toLocaleDateString()
+}
 
 function AccontingTable({ data }) {
   const headers = [
@@ -10,14 +16,15 @@ function AccontingTable({ data }) {
     "Cognome",
     "Nome",
     "Medico",
-    "Totale"
+    "Totale",
+    "Pagamento"
   ];
 
   return (
     <div>
-      <Header tag="h2">Fatture</Header>
+      <Header tag="h2">Documenti</Header>
       <Divider />
-      <Table celled>
+      <Table celled color="blue">
         <Table.Header>
           <Table.Row>
             {headers.map((header, index) => (
@@ -29,12 +36,13 @@ function AccontingTable({ data }) {
           {data.map((row, index) => (
             <Table.Row key={index}>
               <Table.Cell>{row.NUM_FATTURA}</Table.Cell>
-              <Table.Cell>{row.DATA_FATTURA}</Table.Cell>
-              <Table.Cell>{row.CDA_MODULO}</Table.Cell>
+              <Table.Cell>{toDate(row.DATA_FATTURA)}</Table.Cell>
+              <Table.Cell>{row.TIPO_FATTURA}</Table.Cell>
               <Table.Cell>{row.COGNOME}</Table.Cell>
               <Table.Cell>{row.NOME}</Table.Cell>
-              <Table.Cell>{row.COGNOME_MEDICO}</Table.Cell>
-              <Table.Cell>{row.VAL_TOT_FATTURA}</Table.Cell>
+              <Table.Cell>{row.COGNOME_MEDICO} {row.NOME_MEDICO}</Table.Cell>
+              <Table.Cell>{parseCurrency(row.TOTALE)}</Table.Cell>
+              <Table.Cell>{row.PAG_DESC}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

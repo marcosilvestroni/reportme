@@ -5,17 +5,28 @@
   "author": "Marco Silvestroni",
   "private": true,
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.2",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-datasource": "^0.6.3",
+    "apollo-link-http": "^1.5.16",
+    "apollo-server": "^2.9.5",
     "cors": "^2.8.5",
     "electron-is-dev": "^1.1.0",
     "express": "^4.17.1",
     "fast-csv": "^3.4.0",
     "fs": "^0.0.1-security",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
     "mssql": "^5.1.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-emotion": "^10.0.0",
     "react-scripts": "3.1.2",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.1",
+    "sequelize": "^5.19.4",
+    "tedious": "^6.4.0",
     "winreg": "^1.2.4"
   },
   "scripts": {
@@ -23,7 +34,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"nodemon ./src/_server/app.js\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"yarn server-dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "server-dev":"nodemon ./src/_server/index.js",
     "electron-pack": "electron-builder --win --ia32 --x64 ",
     "preelectron-pack": "yarn build",
     "postinstall": "electron-builder install-app-deps",
@@ -54,7 +66,7 @@
   "main": "public/electron.js",
   "homepage": "./",
   "build": {
-    "appId": "com.electron.deskapp",
+    "appId": "com.electron.reportme",
     "files": [
       "build/**/*",
       "node_modules/**/*"
