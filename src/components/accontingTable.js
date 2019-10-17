@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Table, Divider, Header } from "semantic-ui-react";
-import { parseCurrency } from '../_server/utils'
+import { parseCurrency } from './utils'
 
 const toDate = (timeStamp) => {
   const d = new Date(parseInt(timeStamp))

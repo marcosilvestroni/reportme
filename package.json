@@ -34,7 +34,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"yarn server-dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "server-dev":"nodemon ./src/_server/index.js",
     "electron-pack": "electron-builder --win --ia32 --x64 ",
     "preelectron-pack": "yarn build",
     "postinstall": "electron-builder install-app-deps",
@@ -65,7 +66,7 @@
   "main": "public/electron.js",
   "homepage": "./",
   "build": {
-    "appId": "com.electron.deskapp",
+    "appId": "com.electron.reportme",
     "files": [
       "build/**/*",
       "node_modules/**/*"

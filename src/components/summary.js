@@ -1,6 +1,6 @@
 import React from "react";
 import { Header, Divider, Table, Container } from "semantic-ui-react";
-import { parseCurrency } from "../_server/utils";
+import { parseCurrency } from "./utils";
 
 export default ({ meta }) => {
   return (

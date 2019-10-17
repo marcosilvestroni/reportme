@@ -6,14 +6,24 @@ const os = require("os");
 const path = require("path");
 
 const isDev = require("electron-is-dev");
-if (!isDev) {
+
+if (isDev) {
   let { fork } = require("child_process");
-  fork(__dirname + "/../src/_server/index.js");
+  const forked = fork(__dirname + "/../src/_server/index.js");
 }
 
 let mainWindow;
 
 const { ipcMain } = electron;
+ipcMain.on("close-app", () => {
+  mainWindow.close();
+});
+ipcMain.on("min-app", () => {
+  mainWindow.minimize();
+});
+ipcMain.on("max-app", () => {
+  mainWindow.maximize();
+});
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -25,24 +35,12 @@ function createWindow() {
     }
   });
 
-  //mainWindow.setMenuBarVisibility(false)
-
   mainWindow.loadURL(
     isDev
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
   mainWindow.on("closed", () => (mainWindow = null));
-
-  ipcMain.on("close-app", () => {
-    mainWindow.close();
-  });
-  ipcMain.on("min-app", () => {
-    mainWindow.minimize();
-  });
-  ipcMain.on("max-app", () => {
-    mainWindow.maximize();
-  });
 
   //react dev tools
   if (isDev) {
@@ -55,7 +53,9 @@ function createWindow() {
   }
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
