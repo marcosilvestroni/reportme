@@ -4,7 +4,7 @@ import { parseCurrency } from "./utils";
 
 export default ({ meta }) => {
   return (
-    <div>
+    <div  className="printme">
       <Header tag="h2">Riepilogo</Header>
       <Divider />
       <Container>

@@ -3,7 +3,12 @@ import React from "react";
 import { Header, Icon, Grid, Button } from "semantic-ui-react";
 
 const printPage = () => {
+  const elms = document.getElementsByClassName("printme");
+  Array.prototype.forEach.call(elms, element => {
+    document.getElementById("print-zone").appendChild(element.cloneNode(true));
+  });
   window.print();
+  document.getElementById("print-zone").innerHTML = "";
 };
 
 const closeApplication = () => {
@@ -29,21 +34,21 @@ const HeaderCustom = () => {
         </Button>
       </Grid.Column>
       <Grid.Column>
-        <Header as="h3" icon textAlign="center">
+        <Header as="h3" icon textAlign="center" className="printme">
           <Icon name="chart line" circular />
-          ReportMe
+          ReportMe 
         </Header>
       </Grid.Column>
       <Grid.Column textAlign="right">
         <Button.Group>
           <Button icon onClick={minimizeApplication}>
-            <Icon name="window minimize" size="large" />
+            <Icon name="window minimize"  />
           </Button>
           <Button icon onClick={maximazeApplication}>
-            <Icon name="window maximize" size="large" />
+            <Icon name="window maximize"  />
           </Button>
           <Button icon onClick={closeApplication}>
-            <Icon name="sign-out" size="large" />
+            <Icon name="cancel" />
           </Button>
         </Button.Group>
       </Grid.Column>

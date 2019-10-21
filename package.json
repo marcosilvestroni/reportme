@@ -19,6 +19,8 @@
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "mssql": "^5.1.0",
+    "node-ipc": "^9.1.1",
+    "ping": "^0.2.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-emotion": "^10.0.0",
@@ -27,6 +29,7 @@
     "semantic-ui-react": "^0.88.1",
     "sequelize": "^5.19.4",
     "tedious": "^6.4.0",
+    "v8-compile-cache": "^2.1.0",
     "winreg": "^1.2.4"
   },
   "scripts": {
@@ -34,9 +37,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"yarn server-dev\" \"wait-on http://localhost:3000 && electron .\"",
-    "server-dev":"nodemon ./src/_server/index.js",
-    "electron-pack": "electron-builder --win --ia32 --x64 ",
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "server-dev": "nodemon ./public/server/index.js",
+    "electron-pack": "electron-builder --win",
     "preelectron-pack": "yarn build",
     "postinstall": "electron-builder install-app-deps",
     "develop": "yarn electron-dev"

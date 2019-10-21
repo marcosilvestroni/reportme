@@ -1,21 +1,19 @@
 const SQL = require("sequelize");
-const CONFIG = require("./config");
 
-const db = new SQL(CONFIG.database, CONFIG.user, CONFIG.password, {
-  dialect: "mssql",
-  host: CONFIG.server,
-  dialectOptions: {
-    options: {
-      ...CONFIG.options
+const createStore = config => {
+  const db = new SQL(config.database, config.user, config.password, {
+    dialect: "mssql",
+    host: config.server,
+    dialectOptions: {
+      options: {
+        ...config.options
+      }
+    },
+    define: {
+      freezeTableName: true,
+      timestamps: false
     }
-  },
-  define: {
-    freezeTableName: true,
-    timestamps: false
-  }
-});
-
-const createStore = () => {
+  });
   const medici = db.define("medici", {
     MED_ID: {
       type: SQL.STRING,
@@ -31,7 +29,7 @@ const createStore = () => {
       type: SQL.STRING,
       primaryKey: true
     },
-    DES_CONTO: SQL.STRING,
+    DES_CONTO: SQL.STRING
   });
 
   const tipoDocumenti = db.define("caxx_tipo_documento", {
@@ -39,13 +37,12 @@ const createStore = () => {
       type: SQL.STRING,
       primaryKey: true
     },
-    DES_MODULO: SQL.STRING,
+    DES_MODULO: SQL.STRING
   });
 
-   return { medici, pagamenti, tipoDocumenti };
+  return { db, medici, pagamenti, tipoDocumenti };
 };
 
 module.exports = {
-  createStore,
-  db
+  createStore
 };

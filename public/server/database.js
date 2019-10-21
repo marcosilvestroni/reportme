@@ -1,6 +1,5 @@
 const { DataSource } = require("apollo-datasource");
 const queries = require("./queries");
-const { db } = require("./store");
 const SQL = require("sequelize");
 
 class databaseAPI extends DataSource {
@@ -25,7 +24,7 @@ class databaseAPI extends DataSource {
   }
 
   async getAllFatture() {
-    const found = await db.query(queries.fatture);
+    const found = await  this.store.db.query(queries.fatture);
     // eslint-disable-next-line no-unused-vars
     const [results, meta] = found;
     return results && results.length

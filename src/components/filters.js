@@ -89,7 +89,7 @@ const Filters = ({ update }) => {
   };
 
   return (
-    <div>
+    <div  className="printme">
       <Header tag="h3">Selezione</Header>
       <Divider />
       <Form id="filters" loading={loading}>
