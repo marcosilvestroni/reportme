@@ -56,12 +56,13 @@ const Filters = ({ update }) => {
   };
 
   const applyPresetDates = preset => {
-    const dt = new Date();
+    const dt = new Date()
     const withPreset = {
       today: () => {
+        const from = new Date(dt.getFullYear(),dt.getMonth(),dt.getDate(),2);
         setFilters({
           ...filters,
-          fromDate: dt.getTime(),
+          fromDate: from.getTime(),
           toDate: dt.getTime()
         });
       },
