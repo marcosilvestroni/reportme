@@ -36,17 +36,14 @@ const Registry = require("winreg"),
   });
 
 const serverName = () => {
-  let name;
+  let reg=[];
   regKey.values((err, items) => {
-    if (err || (Array.isArray(items) && items.length == 0)) {
-      console.log("registry search error", err);
-    }
-    name =
-      err || (Array.isArray(items) && items.length == 0)
-        ? null
-        : items.filter(elm => elm.name == "DataSource")[0].value;
+    if (err) reg = [];
+    if (!err || (Array.isArray(items) && items.length > 0)) reg = items;
   });
-  return name;
+  return (reg.filter(elm => elm.name == "DataSource")[0] || { value: "" })
+    .value;
 };
+
 
 window.serverName = serverName();

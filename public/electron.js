@@ -70,16 +70,19 @@ function createBackgroundProcess(socketName) {
   ]);
 
   serverProcess.on("message", msg => {
-    console.log("serverProcess message:",msg);
+    console.log("serverProcess message:", msg);
   });
 
-  return serverProcess
+  return serverProcess;
 }
 
 app.on("ready", async () => {
   const serverSocket = await findOpenSocket();
   createBackgroundProcess(serverSocket);
-  createWindow(serverSocket);
+  setTimeout(function () {
+    
+    createWindow(serverSocket)
+  },2000);
 });
 
 app.on("before-quit", () => {
@@ -95,7 +98,7 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
+app.on("activate", async () => {
   if (clientWin === null) {
     createWindow();
   }

@@ -10,7 +10,7 @@ const Registry = require("winreg"),
     key: "\\Software\\anthos\\Method\\4.0\\Generale"
   });
 const ping = require("ping");
-const fallback = "192.168.1.133";
+const fallback = "192.168.0.80";
 
 let isDev, version;
 
@@ -31,17 +31,12 @@ if (process.argv[2] === "--subprocess") {
 }
 
 const getServerName = () => {
-  let name;
+  let reg = [];
   regKey.values((err, items) => {
-    if (err || (Array.isArray(items) && items.length == 0)) {
-      console.log("registry search error", err);
-    }
-    name =
-      err || (Array.isArray(items) && items.length == 0)
-        ? null
-        : items.filter(elm => elm.name == "DataSource")[0].value;
+    if (!err || (Array.isArray(items) && items.length > 0)) reg = items;
   });
-  return name;
+  return (reg.filter(elm => elm.name == "DataSource")[0] || { value: "" })
+    .value;
 };
 
 const name = getServerName();
