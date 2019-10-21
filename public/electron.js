@@ -1,49 +1,58 @@
+const path = require("path");
+const { fork } = require("child_process");
+const os = require("os");
 const electron = require("electron");
+const isDev = require("electron-is-dev");
+require("v8-compile-cache");
+
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const os = require("os");
-
-const path = require("path");
-
-const isDev = require("electron-is-dev");
-
-if (isDev) {
-  let { fork } = require("child_process");
-  const forked = fork(__dirname + "/../src/_server/index.js");
-}
-
-let mainWindow;
-
+const findOpenSocket = require("./find-open-socket");
 const { ipcMain } = electron;
+
+let clientWin;
+let serverProcess;
+
 ipcMain.on("close-app", () => {
-  mainWindow.close();
+  app.quit();
 });
 ipcMain.on("min-app", () => {
-  mainWindow.minimize();
+  clientWin.minimize();
 });
 ipcMain.on("max-app", () => {
-  mainWindow.maximize();
+  clientWin.maximize();
 });
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
+function createWindow(socketName) {
+  clientWin = new BrowserWindow({
     width: 1200,
     height: 1080,
     frame: false,
     webPreferences: {
-      preload: __dirname + "/preload.js"
+      nodeIntegration: false,
+      preload: __dirname + "/preload-client.js"
     }
   });
 
-  mainWindow.loadURL(
+  clientWin.loadURL(
     isDev
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
-  mainWindow.on("closed", () => (mainWindow = null));
+  clientWin.on("closed", () => (clientWin = null));
 
+  clientWin.webContents.on("did-finish-load", () => {
+    clientWin.webContents.send("set-socket", {
+      name: socketName
+    });
+  });
+
+  //clientWin.webContents.openDevTools()
   //react dev tools
-  if (isDev) {
+  if (
+    isDev &&
+    !("React Developer Tools" in BrowserWindow.getDevToolsExtensions())
+  ) {
     BrowserWindow.addDevToolsExtension(
       path.join(
         os.homedir(),
@@ -53,8 +62,34 @@ function createWindow() {
   }
 }
 
-app.on("ready", () => {
-  createWindow();
+function createBackgroundProcess(socketName) {
+  serverProcess = fork(__dirname + "/server/index.js", [
+    "--subprocess",
+    app.getVersion(),
+    socketName
+  ]);
+
+  serverProcess.on("message", msg => {
+    console.log("serverProcess message:", msg);
+  });
+
+  return serverProcess;
+}
+
+app.on("ready", async () => {
+  const serverSocket = await findOpenSocket();
+  createBackgroundProcess(serverSocket);
+  setTimeout(function () {
+    
+    createWindow(serverSocket)
+  },2000);
+});
+
+app.on("before-quit", () => {
+  if (serverProcess) {
+    serverProcess.kill();
+    serverProcess = null;
+  }
 });
 
 app.on("window-all-closed", () => {
@@ -63,8 +98,8 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
-  if (mainWindow === null) {
+app.on("activate", async () => {
+  if (clientWin === null) {
     createWindow();
   }
 });

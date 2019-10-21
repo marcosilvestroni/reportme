@@ -9,6 +9,7 @@ const MenuCustom = ({ children }) => {
 
   return (
     <div>
+      
       <Menu pointing secondary>
         <Menu.Item
           name="Reportistica"
@@ -24,6 +25,7 @@ const MenuCustom = ({ children }) => {
       </Menu>
 
       {router[active]}
+      <p>Connected to server: {window.serverName || 'hardcoded server'}</p>
     </div>
   );
 };

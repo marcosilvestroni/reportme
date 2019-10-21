@@ -56,12 +56,13 @@ const Filters = ({ update }) => {
   };
 
   const applyPresetDates = preset => {
-    const dt = new Date();
+    const dt = new Date()
     const withPreset = {
       today: () => {
+        const from = new Date(dt.getFullYear(),dt.getMonth(),dt.getDate(),2);
         setFilters({
           ...filters,
-          fromDate: dt.getTime(),
+          fromDate: from.getTime(),
           toDate: dt.getTime()
         });
       },
@@ -89,7 +90,7 @@ const Filters = ({ update }) => {
   };
 
   return (
-    <div>
+    <div  className="printme">
       <Header tag="h3">Selezione</Header>
       <Divider />
       <Form id="filters" loading={loading}>

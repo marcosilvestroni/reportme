@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import AccontingTable from "../components/accontingTable";
-import { Segment, Button , Grid} from "semantic-ui-react";
+import { Segment, Button, Grid } from "semantic-ui-react";
 //import PropTypes from "prop-types";
 import Filters from "../components/filters";
-import Summary from "../components/summary"
+import Summary from "../components/summary";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
@@ -60,11 +60,14 @@ export default () => {
   return (
     <Segment loading={loading}>
       <Grid divided columns="equal">
-        <Grid.Column><Filters update={updateFilters} /></Grid.Column>
-        <Grid.Column>{data && <Summary meta={data.fatture.meta} />}</Grid.Column>
+        <Grid.Column>
+          <Filters update={updateFilters} />
+        </Grid.Column>
+        <Grid.Column>
+          {data && <Summary meta={data.fatture.meta} />}
+        </Grid.Column>
       </Grid>
-      
-      
+
       {data && <AccontingTable data={data.fatture.fatture} />}
       {data && data.fatture && data.fatture.hasMore && (
         <Button
