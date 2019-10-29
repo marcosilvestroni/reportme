@@ -14,6 +14,7 @@ module.exports = gql`
     ): FattureConnection!
     pagamenti: [Pagamenti]!
     tipoDocumenti: [TipoDocumenti]!
+    brache: [Branche]!
   }
   type Medici {
     MED_ID: ID!
@@ -24,7 +25,7 @@ module.exports = gql`
   type Fatture {
     _id: ID
     MED_ID: String
-    PZ_INT: String
+    PZ_ID: String
     COGNOME: String
     NOME: String
     LOC: String
@@ -46,6 +47,7 @@ module.exports = gql`
     RIF_DATA_FATTURA: String
     PAG_DESC: String
     PAG_COD: String
+    RIGHE: [RigheFattura]!
   }
 
   type Pagamenti {
@@ -70,5 +72,21 @@ module.exports = gql`
   type TipoDocumenti {
     CDA_MODULO: String
     DES_MODULO: String
+  }
+  type Branche {
+    BRANCA: String
+    DES_BRANCA: String
+  }
+
+  type RigheFattura {
+    _id: ID
+    _refFattura: String
+    CODICE_LISTINO: String
+    MED_ID: String
+    BRANCA: String
+    PREZZO: String
+    DENTI: String
+    DESCRIZIONE_RIGA: String
+    NUMERO_RIGA: String
   }
 `;

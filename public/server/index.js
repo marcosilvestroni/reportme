@@ -10,7 +10,7 @@ const Registry = require("winreg"),
     key: "\\Software\\anthos\\Method\\4.0\\Generale"
   });
 const ping = require("ping");
-const fallback = "192.168.1.133";//192.168.0.80
+const fallback = "100.118.138.168"//"192.168.0.80";
 
 let isDev, version;
 

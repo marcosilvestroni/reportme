@@ -40,7 +40,15 @@ const createStore = config => {
     DES_MODULO: SQL.STRING
   });
 
-  return { db, medici, pagamenti, tipoDocumenti };
+  const branche = db.define("_branca", {
+    BRANCA: {
+      type: SQL.STRING,
+      primaryKey: true
+    },
+    DES_BRANCA: SQL.STRING
+  });
+
+  return { db, medici, pagamenti, tipoDocumenti ,branche};
 };
 
 module.exports = {

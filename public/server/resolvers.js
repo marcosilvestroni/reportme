@@ -80,5 +80,12 @@ module.exports = {
       dataSources.databaseAPI.getAllPagamenti(),
     tipoDocumenti: (_, __, { dataSources }) =>
       dataSources.databaseAPI.getAllTipoDocumenti()
+  },
+  Fatture: {
+    RIGHE: ({_id}, _,{ dataSources }) => {
+      return dataSources.databaseAPI.getAllRigheFatture().then((results) => {
+        return results.filter(elm => elm._refFattura === _id)
+      })
+    }
   }
 };

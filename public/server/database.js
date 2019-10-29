@@ -48,6 +48,27 @@ class databaseAPI extends DataSource {
 
     return found && found.length ? found : [];
   }
+
+  async getAllRigheFatture() {
+    const found = await  this.store.db.query(queries.righe_fatture);
+    // eslint-disable-next-line no-unused-vars
+    const [results, meta] = found;
+    return results && results.length
+      ? results.map(elm => {
+        const dt = new Date(elm.DATA_FATTURA)
+        return {
+          _id: `${dt.getTime()}${elm.NUM_FATTURA}${elm.NUMERO_RIGA}`,
+          _refFattura : `${dt.getTime()}${elm.NUM_FATTURA}`,
+          ...elm
+        }})
+      : [];
+  }
+
+  async getAllBranche() {
+    const found = await this.store.branche.findAll();
+
+    return found && found.length ? found : [];
+  }
 }
 
 module.exports = databaseAPI;
