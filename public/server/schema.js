@@ -14,7 +14,7 @@ module.exports = gql`
     ): FattureConnection!
     pagamenti: [Pagamenti]!
     tipoDocumenti: [TipoDocumenti]!
-    brache: [Branche]!
+    branche: [Branche]!
   }
   type Medici {
     MED_ID: ID!

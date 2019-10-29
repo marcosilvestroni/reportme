@@ -79,13 +79,15 @@ module.exports = {
     pagamenti: (_, __, { dataSources }) =>
       dataSources.databaseAPI.getAllPagamenti(),
     tipoDocumenti: (_, __, { dataSources }) =>
-      dataSources.databaseAPI.getAllTipoDocumenti()
+      dataSources.databaseAPI.getAllTipoDocumenti(),
+    branche: (_, __, { dataSources }) =>
+      dataSources.databaseAPI.getAllBranche()
   },
   Fatture: {
-    RIGHE: ({_id}, _,{ dataSources }) => {
-      return dataSources.databaseAPI.getAllRigheFatture().then((results) => {
-        return results.filter(elm => elm._refFattura === _id)
-      })
+    RIGHE: ({ _id }, _, { dataSources }) => {
+      return dataSources.databaseAPI.getAllRigheFatture().then(results => {
+        return results.filter(elm => elm._refFattura === _id);
+      });
     }
   }
 };
