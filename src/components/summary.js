@@ -18,7 +18,7 @@ export default ({ meta }) => {
                 <Header as="h4">{meta.totalCount}</Header>
               </Table.Cell>
             </Table.Row>
-            <Table.Row>
+            {/* <Table.Row>
               <Table.Cell>
                 <Header as="h4" image>
                   {"Prestazioni/imponibile"}
@@ -45,8 +45,8 @@ export default ({ meta }) => {
               <Table.Cell textAlign="right">
                 <Header as="h4">{parseCurrency(meta.totalStamps)}</Header>
               </Table.Cell>
-            </Table.Row>
-            <Table.Row>
+            </Table.Row>*/}
+            <Table.Row> 
               <Table.Cell>
                 <Header as="h3" >
                   {"Totale"}

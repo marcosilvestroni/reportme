@@ -78,7 +78,7 @@ function createBackgroundProcess(socketName) {
 
 app.on("ready", async () => {
   const serverSocket = await findOpenSocket();
-  createBackgroundProcess(serverSocket);
+  //createBackgroundProcess(serverSocket);
   setTimeout(function () {
     
     createWindow(serverSocket)

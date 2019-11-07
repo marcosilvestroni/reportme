@@ -20,6 +20,10 @@ export const FILTERS_DATA = gql`
       CDA_MODULO
       DES_MODULO
     }
+    branche {
+      BRANCA
+      DES_BRANCA
+    }
   }
 `;
 
@@ -39,11 +43,14 @@ const Filters = ({ update }) => {
     update({});
   };
 
-  const handleChange = (e, { name, value }) => {
+  const handleChange = (e, { name, value, checked }) => {
     let updateVal = value;
     if (["fromDate", "toDate"].includes(name)) {
       const dateVal = new Date(value);
       updateVal = dateVal.getTime();
+    }
+    if (name === "forRow") {
+      updateVal = checked;
     }
     setFilters({ ...filters, [name]: updateVal });
   };
@@ -56,19 +63,19 @@ const Filters = ({ update }) => {
   };
 
   const applyPresetDates = preset => {
-    const dt = new Date()
+    const dt = new Date();
     const withPreset = {
       today: () => {
-        const from = new Date(dt.getFullYear(),dt.getMonth(),dt.getDate(),2);
+        const from = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 2);
         setFilters({
           ...filters,
           fromDate: from.getTime(),
           toDate: dt.getTime()
         });
       },
-      lastMonth: () => {
+      thisMonth: () => {
         const from = new Date();
-        from.setMonth(from.getMonth() - 1);
+        from.setDate(1);
         setFilters({
           ...filters,
           fromDate: from.getTime(),
@@ -89,16 +96,63 @@ const Filters = ({ update }) => {
     withPreset[preset]();
   };
 
+  const applyPresetBranche = preset => {
+    const withPreset = {
+      poliambulatorio: () => {
+        setFilters({
+          ...filters,
+          branche: [
+            "14",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29"
+          ]
+        });
+      },
+      odontoiatria: () => {
+        setFilters({
+          ...filters,
+          branche: [
+            "01",
+            "02",
+            "03",
+            "04",
+            "05",
+            "06",
+            "07",
+            "08",
+            "09",
+            "10",
+            "15",
+            "16"
+          ]
+        });
+      }
+    };
+
+    withPreset[preset]();
+  };
+
   return (
-    <div  className="printme">
+    <div className="printme">
       <Header tag="h3">Selezione</Header>
       <Divider />
       <Form id="filters" loading={loading}>
         <Form.Group>
           <Button.Group widths="3" basic>
             <Button onClick={() => applyPresetDates("today")}>Oggi</Button>
-            <Button onClick={() => applyPresetDates("lastMonth")}>
-              Ultimo Mese
+            <Button onClick={() => applyPresetDates("thisMonth")}>
+              Questo Mese
             </Button>
             <Button onClick={() => applyPresetDates("lastThreeMonths")}>
               Ultimo Trimetre
@@ -112,32 +166,32 @@ const Filters = ({ update }) => {
             type="date"
             name="fromDate"
             onChange={handleChange}
-            defaultValue={parseForDateInput(filters.fromDate)}
+            value={parseForDateInput(filters.fromDate)}
           ></Form.Input>
           <Form.Input
             label="A data"
             type="date"
             name="toDate"
             onChange={handleChange}
-            defaultValue={parseForDateInput(filters.toDate)}
+            value={parseForDateInput(filters.toDate)}
           ></Form.Input>
         </Form.Group>
+
         <Form.Group widths={2}>
           {data && (
             <Form.Select
-              label="Medico"
-              name="medico"
+              label="Pagamento"
+              name="pagamento"
               options={
-                data.medici &&
-                data.medici.map(({ MED_ID, TITOLO, COGNOME, NOME }) => ({
-                  key: MED_ID,
-                  value: MED_ID,
-                  text: `${TITOLO} ${COGNOME} ${NOME}`
+                data.pagamenti &&
+                data.pagamenti.map(({ CDA_CONTO, DES_CONTO }) => ({
+                  key: CDA_CONTO,
+                  value: CDA_CONTO,
+                  text: `${DES_CONTO}`
                 }))
               }
               onChange={handleChange}
-              defaultValue={filters.medico}
-              value={filters.medico ? filters.medico : ""}
+              value={filters.pagamento}
               clearable
             ></Form.Select>
           )}
@@ -153,31 +207,60 @@ const Filters = ({ update }) => {
               }))
             }
             onChange={handleChange}
-            defaultValue={filters.tipo}
-            value={filters.tipo ? filters.tipo : ""}
+            value={filters.tipo}
             clearable
           ></Form.Select>
         </Form.Group>
         <Form.Group widths={2}>
           {data && (
             <Form.Select
-              label="Pagamento"
-              name="pagamento"
+              label="Medico"
+              name="medico"
               options={
-                data.pagamenti &&
-                data.pagamenti.map(({ CDA_CONTO, DES_CONTO }) => ({
-                  key: CDA_CONTO,
-                  value: CDA_CONTO,
-                  text: `${DES_CONTO}`
+                data.medici &&
+                data.medici.map(({ MED_ID, TITOLO, COGNOME, NOME }) => ({
+                  key: MED_ID,
+                  value: MED_ID,
+                  text: `${TITOLO} ${COGNOME} ${NOME}`
                 }))
               }
               onChange={handleChange}
-              defaultValue={filters.pagamento}
-              value={filters.pagamento ? filters.pagamento : ""}
+              value={filters.medico}
               clearable
             ></Form.Select>
           )}
+          {data && (
+            <Form.Select
+              label="Branca"
+              name="branche"
+              options={
+                data.branche &&
+                data.branche.map(({ BRANCA, DES_BRANCA }) => ({
+                  key: BRANCA,
+                  value: BRANCA,
+                  text: `${DES_BRANCA}`
+                }))
+              }
+              onChange={handleChange}
+              value={filters.branche}
+              clearable
+              fluid
+              multiple
+              selection
+            ></Form.Select>
+          )}
         </Form.Group>
+        <Form.Group>
+          <Button.Group widths="3" basic>
+            <Button onClick={() => applyPresetBranche("odontoiatria")}>
+              Odontoiatria
+            </Button>
+            <Button onClick={() => applyPresetBranche("poliambulatorio")}>
+              Poliambulatorio
+            </Button>
+          </Button.Group>
+        </Form.Group>
+
         <Form.Group>
           <Button.Group widths="2">
             <Button size="large" secondary onClick={resetFilters}>

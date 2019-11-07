@@ -23,3 +23,9 @@ export const parseCurrency = value => {
     " €"
   );
 };
+
+
+export const toDate = timeStamp => {
+  const d = new Date(parseInt(timeStamp));
+  return d.toLocaleDateString();
+};

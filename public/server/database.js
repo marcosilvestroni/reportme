@@ -53,13 +53,18 @@ class databaseAPI extends DataSource {
     const found = await  this.store.db.query(queries.righe_fatture);
     // eslint-disable-next-line no-unused-vars
     const [results, meta] = found;
+    const heads = await this.getAllFatture();
+
     return results && results.length
       ? results.map(elm => {
         const dt = new Date(elm.DATA_FATTURA)
+        const _refFattura =`${dt.getTime()}${elm.NUM_FATTURA}`
         return {
           _id: `${dt.getTime()}${elm.NUM_FATTURA}${elm.NUMERO_RIGA}`,
-          _refFattura : `${dt.getTime()}${elm.NUM_FATTURA}`,
-          ...elm
+          _refFattura,
+          ...elm,
+          FATTURA:heads.filter(fat=>fat._id === _refFattura)[0]
+
         }})
       : [];
   }

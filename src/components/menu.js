@@ -20,7 +20,7 @@ const MenuCustom = ({ children }) => {
           name="Esportazione"
           active={active === "export"}
           onClick={() => setActive("export")}
-          disabled
+          
         />
       </Menu>
 

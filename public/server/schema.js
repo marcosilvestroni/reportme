@@ -11,10 +11,22 @@ module.exports = gql`
       tipo: String
       fromDate: Float
       toDate: Float
+      branche: [String]
+      forRow: Boolean
     ): FattureConnection!
     pagamenti: [Pagamenti]!
     tipoDocumenti: [TipoDocumenti]!
     branche: [Branche]!
+    righe(
+      after: String
+      medico: String
+      pagamento: String
+      tipo: String
+      fromDate: Float
+      toDate: Float
+      branche: [String]
+    ): RigheConnection!
+    export:String
   }
   type Medici {
     MED_ID: ID!
@@ -82,11 +94,25 @@ module.exports = gql`
     _id: ID
     _refFattura: String
     CODICE_LISTINO: String
-    MED_ID: String
-    BRANCA: String
+    MEDICO: Medici
+    BRANCA: Branche
     PREZZO: String
     DENTI: String
     DESCRIZIONE_RIGA: String
     NUMERO_RIGA: String
+    FATTURA: Fatture
+  }
+  type RigheConnection {
+    cursor: String
+    hasMore: Boolean!
+    righe: [RigheFattura]!
+    meta: MetaRighe
+  }
+  type MetaRighe {
+    totalCount: Int
+    totalAmount: Float
+    totalTaxes: Float
+    totalStamps: Float
+    totalServices: Float
   }
 `;

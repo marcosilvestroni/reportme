@@ -1,40 +1,53 @@
 import React, { useState } from "react";
-import AccontingTable from "../components/accontingTable";
+import Accounting from "../components/accounting";
 import { Segment, Button, Grid } from "semantic-ui-react";
-//import PropTypes from "prop-types";
 import Filters from "../components/filters";
 import Summary from "../components/summary";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
-export const FATTURE_DATA = gql`
-  query fatture(
+export const RIGHE_DATA = gql`
+  query righe(
     $after: String
     $medico: String
     $pagamento: String
     $tipo: String
     $fromDate: Float
     $toDate: Float
+    $branche: [String]
   ) {
-    fatture(
+    righe(
       after: $after
       medico: $medico
       pagamento: $pagamento
       tipo: $tipo
       fromDate: $fromDate
       toDate: $toDate
+      branche: $branche
     ) {
-      fatture {
+      righe {
         _id
-        NUM_FATTURA
-        DATA_FATTURA
-        TIPO_FATTURA
-        COGNOME
-        NOME
-        COGNOME_MEDICO
-        NOME_MEDICO
-        TOTALE
-        PAG_DESC
+        NUMERO_RIGA
+        PREZZO
+        DESCRIZIONE_RIGA
+        DENTI
+        MEDICO {
+          COGNOME
+          NOME
+        }
+        BRANCA {
+          DES_BRANCA
+        }
+        FATTURA {
+          _id
+          NUM_FATTURA
+          DATA_FATTURA
+          TIPO_FATTURA
+          COGNOME
+          NOME
+          TOTALE
+          PAG_DESC
+        }
       }
       cursor
       hasMore
@@ -51,7 +64,7 @@ export const FATTURE_DATA = gql`
 
 export default () => {
   const [filters, updateFilters] = useState({});
-  const { data, loading, error, fetchMore } = useQuery(FATTURE_DATA, {
+  const { data, loading, error, fetchMore } = useQuery(RIGHE_DATA, {
     variables: filters
   });
 
@@ -64,28 +77,28 @@ export default () => {
           <Filters update={updateFilters} />
         </Grid.Column>
         <Grid.Column>
-          {data && <Summary meta={data.fatture.meta} />}
+          {data && <Summary meta={data.righe.meta} />}
         </Grid.Column>
       </Grid>
 
-      {data && <AccontingTable data={data.fatture.fatture} />}
-      {data && data.fatture && data.fatture.hasMore && (
+      {data && <Accounting data={data.righe.righe} />}
+      {data && data.righe && data.righe.hasMore && (
         <Button
           onClick={() =>
             fetchMore({
               variables: {
-                after: data.fatture.cursor
+                after: data.righe.cursor
               },
 
               updateQuery: (prev, { fetchMoreResult, ...rest }) => {
                 if (!fetchMoreResult) return prev;
                 return {
                   ...fetchMoreResult,
-                  fatture: {
-                    ...fetchMoreResult.fatture,
-                    fatture: [
-                      ...prev.fatture.fatture,
-                      ...fetchMoreResult.fatture.fatture
+                  righe: {
+                    ...fetchMoreResult.righe,
+                    righe: [
+                      ...prev.righe.righe,
+                      ...fetchMoreResult.righe.righe
                     ]
                   }
                 };

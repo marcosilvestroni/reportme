@@ -1,4 +1,4 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
 const databaseAPI = require("./database");
@@ -9,8 +9,14 @@ const Registry = require("winreg"),
     hive: Registry.HKCU,
     key: "\\Software\\anthos\\Method\\4.0\\Generale"
   });
+const express = require("express");
+
+const cors = require("cors");
+const path = require("path");
+
+
 const ping = require("ping");
-const fallback = "100.118.138.168"//"192.168.0.80";
+const fallback = "192.168.1.132"; //"192.168.0.80";
 
 let isDev, version;
 
@@ -42,7 +48,7 @@ const getServerName = () => {
 const name = getServerName();
 ping.promise.probe(name, { timeout: 2 }).then(res => {
   const host = res.alive ? res.numeric_host : fallback;
-  console.log(`Method Server ${res.alive ? "alive" : "fallbacked"} at `, host);
+  //console.log(`Method Server ${res.alive ? "alive" : "fallbacked"} at `, host);
   const store = createStore({
     user: "sa",
     password: "startup",
@@ -53,6 +59,11 @@ ping.promise.probe(name, { timeout: 2 }).then(res => {
       tdsVersion: "7_1"
     }
   });
+  const app = express();
+  app.use(cors());
+  app.get("/file-export", function (req, res) {
+    res.sendFile(path.join(__dirname,'tmp.csv'));
+  });
 
   const server = new ApolloServer({
     typeDefs,
@@ -62,7 +73,9 @@ ping.promise.probe(name, { timeout: 2 }).then(res => {
     })
   });
 
-  server.listen().then(({ url }) => {
-    console.log(`🚀 Server API ready at ${url}`);
-  });
+  server.applyMiddleware({ app });
+
+  app.listen({ port: 4000 }, () =>
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+  );
 });
