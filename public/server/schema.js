@@ -26,7 +26,7 @@ module.exports = gql`
       toDate: Float
       branche: [String]
     ): RigheConnection!
-    export:String
+    export(fromDate: Float, toDate: Float): String
   }
   type Medici {
     MED_ID: ID!

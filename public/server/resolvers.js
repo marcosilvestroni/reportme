@@ -218,11 +218,10 @@ module.exports = {
         };
       });
     },
-    export: (_, {fromDate,toDate}, { dataSources }) => {
+    export: (_, { fromDate, toDate }, { dataSources }) => {
       return dataSources.databaseAPI.getAllFatture().then(results => {
-
         let allFatture = results.filter(doc => true);
-
+        console.log("FILTRI ", fromDate, toDate);
         allFatture = fromDate
           ? allFatture.filter(doc => {
               const dt = new Date(doc.DATA_FATTURA);
@@ -237,14 +236,61 @@ module.exports = {
           : allFatture;
 
         fastcsv
-          .writeToPath(path.join(__dirname, "tmp.csv"), allFatture, {
-            headers: true,
-            delimiter: ";"
-          })
+          .writeToPath(
+            path.join(__dirname, "tmp.csv"),
+            allFatture.map(row => {
+              const dt = new Date(row.DATA_FATTURA);
+              const passpartoutEncode = {
+                "010001": "4", // CASSA
+                "011001": "1", //BANCA BCC
+                "011002": "10", //ASSEGNO
+                "011003": "3", //MARCHEX
+                "011004": "2", //BANCA SELLA
+                "011005": "7", //COFIDIS
+                "011006": "5", //UNISALUTE
+                "011007": "6", //PREVIMEDICAL
+                "011008": "9", //PRONTOCARE
+                "011009": "8", //FASIOPEN
+                "011010": "11" //COMPASS --non codificato
+              };
+              return {
+                Codice: "",
+                Ragione_Sociale: "",
+                Cognome: row.COGNOME,
+                Nome: row.NOME,
+                Indirizzo: row.IND,
+                Cap: row.CAP,
+                Città: row.LOC,
+                Provincia: row.PROV,
+                Codice_Fiscale: row.CF,
+                P_Iva: "",
+                Telefono_1: "",
+                Telefono_2: "",
+                E_Mail: "",
+                PEC: "",
+                COD_Sdi: "",
+                Nazionalita: "",
+                Paese: "",
+                Data_Documento: `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`,
+                Numero_Documento: row.NUM_FATTURA,
+                Imponibile: row.IMPONIBILE,
+                Imposte: row.IMPOSTA,
+                Bollo: row.BOLLI,
+                Ritenute: "",
+                Toale: row.TOTALE,
+                ID_Pagamento: passpartoutEncode[row.PAG_COD],
+                Descrizione_Pagamento: row.PAG_DESC
+              };
+            }),
+            {
+              headers: false,
+              delimiter: ";"
+            }
+          )
           .on("error", err => err)
           .on("finish", () => path.join(__dirname, "tmp.csv"));
-        
-        return path.join(__dirname, "tmp.csv")
+
+        return path.join(__dirname, "tmp.csv");
       });
     }
   },
