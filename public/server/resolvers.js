@@ -134,12 +134,13 @@ module.exports = {
         tipo,
         fromDate,
         toDate,
-        branche = []
+        branche = [],
+        denti
       },
       { dataSources }
     ) => {
       return dataSources.databaseAPI.getAllRigheFatture().then(results => {
-        let allRighe = results.filter(doc => doc.FATTURA);
+        let allRighe = [];
 
         let totalCount = 0,
           totalAmount = 0,
@@ -153,9 +154,12 @@ module.exports = {
           !fromDate &&
           !toDate &&
           !medico &&
-          branche.length === 0
+          branche.length === 0 &&
+          !denti
         ) {
           allRighe = [];
+        } else {
+          allRighe = results.filter(doc => doc.FATTURA);
         }
 
         allRighe = pagamento
@@ -188,6 +192,22 @@ module.exports = {
           branche.length === 0
             ? allRighe
             : allRighe.filter(doc => branche.includes(doc.BRANCA));
+        //permanenti 1x-4x
+        //decidui 5x-8x\
+        allRighe = !denti
+          ? allRighe
+          : allRighe.filter(doc => {
+              let isDecidui = false;
+              doc.DENTI.split(",").forEach(elm => {
+                if (denti === 2 && parseInt(elm) <= 50) {
+                  isDecidui = true;
+                }
+                if (denti === 1 && parseInt(elm) >= 50) {
+                  isDecidui = true;
+                }
+              });
+              return isDecidui;
+            });
 
         allRighe.forEach(doc => {
           totalAmount += doc.PREZZO;
@@ -221,7 +241,7 @@ module.exports = {
     export: (_, { fromDate, toDate }, { dataSources }) => {
       return dataSources.databaseAPI.getAllFatture().then(results => {
         let allFatture = results.filter(doc => true);
-        console.log("FILTRI ", fromDate, toDate);
+
         allFatture = fromDate
           ? allFatture.filter(doc => {
               const dt = new Date(doc.DATA_FATTURA);
@@ -235,9 +255,19 @@ module.exports = {
             })
           : allFatture;
 
+        const dtform = new Date();
+        const dtto = new Date();
+        dtform.setTime(fromDate);
+        dtto.setTime(toDate);
+
+        console.log(dtform.getMonth())
+        console.log(dtto)
+
+        const nameFile = `export_${dtform.getDate()}${dtform.getMonth()+1}${dtform.getFullYear()}_${dtto.getDate()}${dtto.getMonth()+1}${dtto.getFullYear()}.csv`;
+
         fastcsv
           .writeToPath(
-            path.join(__dirname, "tmp.csv"),
+            path.join(__dirname, nameFile),
             allFatture.map(row => {
               const dt = new Date(row.DATA_FATTURA);
               const passpartoutEncode = {
@@ -288,9 +318,9 @@ module.exports = {
             }
           )
           .on("error", err => err)
-          .on("finish", () => path.join(__dirname, "tmp.csv"));
+          .on("finish", () => path.join(__dirname, nameFile));
 
-        return path.join(__dirname, "tmp.csv");
+        return path.join(__dirname, nameFile);
       });
     }
   },

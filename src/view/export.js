@@ -6,9 +6,14 @@ export default () => {
   const [filters, updateFilters] = useState();
 
   const handleChange = (e, { name, value }) => {
+    let updateVal = value;
+    if (["fromDate", "toDate"].includes(name)) {
+      const dateVal = new Date(value);
+      updateVal = dateVal.getTime();
+    }
     updateFilters({
       ...filters,
-      [name]: value
+      [name]: updateVal
     });
   };
 
@@ -32,7 +37,7 @@ export default () => {
         </Form.Group>
         
       </Form>
-      {filters && filters.fromDate && filters.toDate && <ExportQuery filters />}
+      {filters && filters.fromDate && filters.toDate && <ExportQuery filters={filters} />}
     </Segment>
   );
 };

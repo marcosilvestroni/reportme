@@ -43,14 +43,11 @@ const Filters = ({ update }) => {
     update({});
   };
 
-  const handleChange = (e, { name, value, checked }) => {
+  const handleChange = (e, { name, value }) => {
     let updateVal = value;
     if (["fromDate", "toDate"].includes(name)) {
       const dateVal = new Date(value);
       updateVal = dateVal.getTime();
-    }
-    if (name === "forRow") {
-      updateVal = checked;
     }
     setFilters({ ...filters, [name]: updateVal });
   };
@@ -166,14 +163,14 @@ const Filters = ({ update }) => {
             type="date"
             name="fromDate"
             onChange={handleChange}
-            value={parseForDateInput(filters.fromDate)}
+            defaultValue={parseForDateInput(filters.fromDate)}
           ></Form.Input>
           <Form.Input
             label="A data"
             type="date"
             name="toDate"
             onChange={handleChange}
-            value={parseForDateInput(filters.toDate)}
+            defaultValue={parseForDateInput(filters.toDate)}
           ></Form.Input>
         </Form.Group>
 
@@ -229,6 +226,22 @@ const Filters = ({ update }) => {
               clearable
             ></Form.Select>
           )}
+          <Form.Group>
+            <Form.Checkbox
+              name="denti"
+              label="Solo prestazioni su permanenti"
+              onChange={handleChange}
+              value={1}
+            ></Form.Checkbox>
+            <Form.Checkbox
+              name="denti"
+              label="Solo prestazioni su decidui"
+              onChange={handleChange}
+              value={2}
+            ></Form.Checkbox>
+          </Form.Group>
+        </Form.Group>
+        <Form.Group widths="equal">
           {data && (
             <Form.Select
               label="Branca"
@@ -242,7 +255,7 @@ const Filters = ({ update }) => {
                 }))
               }
               onChange={handleChange}
-              value={filters.branche}
+              value={filters.branche || []}
               clearable
               fluid
               multiple
@@ -251,7 +264,7 @@ const Filters = ({ update }) => {
           )}
         </Form.Group>
         <Form.Group>
-          <Button.Group widths="3" basic>
+          <Button.Group widths="2" basic>
             <Button onClick={() => applyPresetBranche("odontoiatria")}>
               Odontoiatria
             </Button>

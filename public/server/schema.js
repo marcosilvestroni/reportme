@@ -25,6 +25,7 @@ module.exports = gql`
       fromDate: Float
       toDate: Float
       branche: [String]
+      denti: Int
     ): RigheConnection!
     export(fromDate: Float, toDate: Float): String
   }

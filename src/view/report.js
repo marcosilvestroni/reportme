@@ -15,6 +15,7 @@ export const RIGHE_DATA = gql`
     $fromDate: Float
     $toDate: Float
     $branche: [String]
+    $denti: Int
   ) {
     righe(
       after: $after
@@ -24,6 +25,7 @@ export const RIGHE_DATA = gql`
       fromDate: $fromDate
       toDate: $toDate
       branche: $branche
+      denti: $denti
     ) {
       righe {
         _id
