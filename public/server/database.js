@@ -74,6 +74,12 @@ class databaseAPI extends DataSource {
 
     return found && found.length ? found : [];
   }
+
+  async getAllPazienti() {
+    const found = await this.store.pazienti.findAll();
+
+    return found && found.length ? found : [];
+  }
 }
 
 module.exports = databaseAPI;

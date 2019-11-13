@@ -14,7 +14,8 @@ const QUERY_EXPORT = gql`
 
 export default ({ filters }) => {
   const { data, loading, error } = useQuery(QUERY_EXPORT, {
-    variables: filters
+    variables: filters,
+    fetchPolicy: 'network-only'
   });
   if (error) return <p>ERROR : {error.message}</p>;
 

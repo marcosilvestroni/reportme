@@ -260,67 +260,89 @@ module.exports = {
         dtform.setTime(fromDate);
         dtto.setTime(toDate);
 
-        console.log(dtform.getMonth())
-        console.log(dtto)
+        const nameFile = `export_${dtform.getDate()}${dtform.getMonth() +
+          1}${dtform.getFullYear()}_${dtto.getDate()}${dtto.getMonth() +
+          1}${dtto.getFullYear()}.csv`;
 
-        const nameFile = `export_${dtform.getDate()}${dtform.getMonth()+1}${dtform.getFullYear()}_${dtto.getDate()}${dtto.getMonth()+1}${dtto.getFullYear()}.csv`;
+        dataSources.databaseAPI.getAllPazienti().then(pazienti => {
+          const charSequences = pazienti.map(p => p.PZ_ID);
+          const passpartoutEncode = {
+            "010001": "4", // CASSA
+            "011001": "1", //BANCA BCC
+            "011002": "10", //ASSEGNO
+            "011003": "3", //MARCHEX
+            "011004": "2", //BANCA SELLA
+            "011005": "7", //COFIDIS
+            "011006": "5", //UNISALUTE
+            "011007": "6", //PREVIMEDICAL
+            "011008": "9", //PRONTOCARE
+            "011009": "8", //FASIOPEN
+            "011010": "11" //COMPASS --non codificato
+          };
+          fastcsv
+            .writeToPath(
+              path.join(__dirname, nameFile),
+              allFatture.map(row => {
+                const dt = new Date(row.DATA_FATTURA);
 
-        fastcsv
-          .writeToPath(
-            path.join(__dirname, nameFile),
-            allFatture.map(row => {
-              const dt = new Date(row.DATA_FATTURA);
-              const passpartoutEncode = {
-                "010001": "4", // CASSA
-                "011001": "1", //BANCA BCC
-                "011002": "10", //ASSEGNO
-                "011003": "3", //MARCHEX
-                "011004": "2", //BANCA SELLA
-                "011005": "7", //COFIDIS
-                "011006": "5", //UNISALUTE
-                "011007": "6", //PREVIMEDICAL
-                "011008": "9", //PRONTOCARE
-                "011009": "8", //FASIOPEN
-                "011010": "11" //COMPASS --non codificato
-              };
-              return {
-                Codice: "",
-                Ragione_Sociale: "",
-                Cognome: row.COGNOME,
-                Nome: row.NOME,
-                Indirizzo: row.IND,
-                Cap: row.CAP,
-                Città: row.LOC,
-                Provincia: row.PROV,
-                Codice_Fiscale: row.CF,
-                P_Iva: "",
-                Telefono_1: "",
-                Telefono_2: "",
-                E_Mail: "",
-                PEC: "",
-                COD_Sdi: "",
-                Nazionalita: "",
-                Paese: "",
-                Data_Documento: `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`,
-                Numero_Documento: row.NUM_FATTURA,
-                Imponibile: row.IMPONIBILE,
-                Imposte: row.IMPOSTA,
-                Bollo: row.BOLLI,
-                Ritenute: "",
-                Toale: row.TOTALE,
-                ID_Pagamento: passpartoutEncode[row.PAG_COD],
-                Descrizione_Pagamento: row.PAG_DESC
-              };
-            }),
-            {
-              headers: false,
-              delimiter: ";"
-            }
-          )
-          .on("error", err => err)
-          .on("finish", () => path.join(__dirname, nameFile));
+                const calculatedCode = charSequences.findIndex(
+                  elm => elm === row.PZ_ID
+                );
 
+                return {
+                  Codice: calculatedCode,
+                  Ragione_Sociale: "",
+                  Cognome: row.COGNOME,
+                  Nome: row.NOME,
+                  Indirizzo: row.IND,
+                  Cap: row.CAP,
+                  Città: row.LOC,
+                  Provincia: row.PROV,
+                  Codice_Fiscale: row.CF,
+                  P_Iva: row.PIVA,
+                  Telefono_1: "",
+                  Telefono_2: "",
+                  E_Mail: "",
+                  PEC: "",
+                  COD_Sdi: "",
+                  Nazionalita: "",
+                  Paese: "",
+                  Data_Documento: `${dt.getDate()}/${dt.getMonth() +
+                    1}/${dt.getFullYear()}`,
+                  Numero_Documento: row.NUM_FATTURA,
+                  Imponibile: row.PRESTAZIONI.replace(",", "."),
+                  Imposte: row.IMPOSTA.replace(",", "."),
+                  Bollo: row.BOLLI.replace(",", "."),
+                  Ritenute: "",
+                  Toale: row.TOTALE.replace(",", "."),
+                  ID_Pagamento: passpartoutEncode[row.PAG_COD],
+                  Descrizione_Pagamento: row.PAG_DESC,
+                  O: "IT",
+                  Q: 0
+                };
+              }),
+              {
+                headers: false,
+                delimiter: ";"
+              }
+            )
+            .on("error", err => err)
+            .on("finish", () => path.join(__dirname, nameFile));
+        });
         return path.join(__dirname, nameFile);
+        /* alph.splice(0,26).forEach(first => {
+          alph.forEach(second => {
+            alph.forEach(third => {
+              numbs.forEach(fourth => {
+                numbs.splice(1,10).forEach(fiveth => {
+                  charSequences.push(
+                    `${first.toUpperCase()}${second.toUpperCase()}${third.toUpperCase()}${fourth.toUpperCase()}${fiveth.toUpperCase()}${sixth.toUpperCase()}`
+                  );
+                });
+              });
+            });
+          });
+        }); */
       });
     }
   },

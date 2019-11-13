@@ -47,8 +47,14 @@ const createStore = config => {
     },
     DES_BRANCA: SQL.STRING
   });
+  const pazienti = db.define("pazienti", {
+    PZ_ID: {
+      type: SQL.STRING,
+      primaryKey: true
+    }
+  });
 
-  return { db, medici, pagamenti, tipoDocumenti ,branche};
+  return { db, medici, pagamenti, tipoDocumenti, branche, pazienti };
 };
 
 module.exports = {
