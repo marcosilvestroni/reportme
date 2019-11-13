@@ -279,6 +279,7 @@ module.exports = {
             "011009": "8", //FASIOPEN
             "011010": "11" //COMPASS --non codificato
           };
+          
           fastcsv
             .writeToPath(
               path.join(__dirname, nameFile),
@@ -310,11 +311,11 @@ module.exports = {
                   Data_Documento: `${dt.getDate()}/${dt.getMonth() +
                     1}/${dt.getFullYear()}`,
                   Numero_Documento: row.NUM_FATTURA,
-                  Imponibile: row.PRESTAZIONI.replace(",", "."),
-                  Imposte: row.IMPOSTA.replace(",", "."),
-                  Bollo: row.BOLLI.replace(",", "."),
+                  Imponibile: row.PRESTAZIONI.toString().replace(",", "."),
+                  Imposte: row.IMPOSTA.toString().replace(",", "."),
+                  Bollo: row.BOLLI.toString().replace(",", "."),
                   Ritenute: "",
-                  Toale: row.TOTALE.replace(",", "."),
+                  Toale: row.TOTALE.toString().replace(",", "."),
                   ID_Pagamento: passpartoutEncode[row.PAG_COD],
                   Descrizione_Pagamento: row.PAG_DESC,
                   O: "IT",
