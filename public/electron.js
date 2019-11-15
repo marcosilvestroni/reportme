@@ -22,6 +22,9 @@ ipcMain.on("min-app", () => {
 ipcMain.on("max-app", () => {
   clientWin.maximize();
 });
+ipcMain.on("download-export", () => {
+  electron.shell.openItem(app.getAppPath() + "/exports");
+});
 
 function createWindow(socketName) {
   clientWin = new BrowserWindow({
@@ -47,7 +50,6 @@ function createWindow(socketName) {
     });
   });
 
-  //clientWin.webContents.openDevTools()
   //react dev tools
   if (
     isDev &&
@@ -59,15 +61,20 @@ function createWindow(socketName) {
         "/.config/chromium/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.0_0"
       )
     );
+    clientWin.webContents.openDevTools();
   }
 }
 
 function createBackgroundProcess(socketName) {
-  serverProcess = fork(__dirname + "/server/index.js", [
-    "--subprocess",
-    app.getVersion(),
-    socketName
-  ]);
+  serverProcess = fork(
+    __dirname + "/server/index.js",
+    ["--subprocess", app.getVersion(), socketName],
+    {
+      env: {
+        APP_PATH: app.getAppPath()
+      }
+    }
+  );
 
   serverProcess.on("message", msg => {
     console.log("serverProcess message:", msg);
@@ -78,11 +85,10 @@ function createBackgroundProcess(socketName) {
 
 app.on("ready", async () => {
   const serverSocket = await findOpenSocket();
-  //createBackgroundProcess(serverSocket);
-  setTimeout(function () {
-    
-    createWindow(serverSocket)
-  },2000);
+  createBackgroundProcess(serverSocket);
+  setTimeout(function() {
+    createWindow(serverSocket);
+  }, 2000);
 });
 
 app.on("before-quit", () => {

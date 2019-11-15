@@ -1,6 +1,7 @@
 const { paginateResults } = require("./utils");
 const path = require("path");
 const fastcsv = require("fast-csv");
+const fs = require("fs");
 
 module.exports = {
   Query: {
@@ -264,6 +265,12 @@ module.exports = {
           1}${dtform.getFullYear()}_${dtto.getDate()}${dtto.getMonth() +
           1}${dtto.getFullYear()}.csv`;
 
+        const pathNameFile = path.join(
+          process.env.APP_PATH,
+          "exports",
+          nameFile
+        );
+
         dataSources.databaseAPI.getAllPazienti().then(pazienti => {
           const charSequences = pazienti.map(p => p.PZ_ID);
           const passpartoutEncode = {
@@ -279,10 +286,16 @@ module.exports = {
             "011009": "8", //FASIOPEN
             "011010": "11" //COMPASS --non codificato
           };
-          
+
+          const dir = `${process.env.APP_PATH}/exports`;
+
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+          }
+
           fastcsv
             .writeToPath(
-              path.join(__dirname, nameFile),
+              pathNameFile,
               allFatture.map(row => {
                 const dt = new Date(row.DATA_FATTURA);
 
@@ -328,22 +341,9 @@ module.exports = {
               }
             )
             .on("error", err => err)
-            .on("finish", () => path.join(__dirname, nameFile));
+            .on("finish", () => pathNameFile);
         });
-        return path.join(__dirname, nameFile);
-        /* alph.splice(0,26).forEach(first => {
-          alph.forEach(second => {
-            alph.forEach(third => {
-              numbs.forEach(fourth => {
-                numbs.splice(1,10).forEach(fiveth => {
-                  charSequences.push(
-                    `${first.toUpperCase()}${second.toUpperCase()}${third.toUpperCase()}${fourth.toUpperCase()}${fiveth.toUpperCase()}${sixth.toUpperCase()}`
-                  );
-                });
-              });
-            });
-          });
-        }); */
+        return pathNameFile;
       });
     }
   },

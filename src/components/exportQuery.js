@@ -2,9 +2,10 @@ import React from "react";
 import { Segment, Button } from "semantic-ui-react";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-//const { BrowserWindow } = require("electron");
 
-//let win = new BrowserWindow({ width: 800, height: 600 });
+const downloadExport = () => {
+  window.ipcRenderer.send("download-export");
+};
 
 const QUERY_EXPORT = gql`
   query export($fromDate: Float, $toDate: Float) {
@@ -15,12 +16,15 @@ const QUERY_EXPORT = gql`
 export default ({ filters }) => {
   const { data, loading, error } = useQuery(QUERY_EXPORT, {
     variables: filters,
-    fetchPolicy: 'network-only'
+    fetchPolicy: "network-only"
   });
   if (error) return <p>ERROR : {error.message}</p>;
 
   if (loading) return <p>LOADING</p>;
 
-  //if (data) win.webContents.downloadURL(`file://${data.export}`);
-  return <Segment>{data && <Button icon="file excel">{data.export}</Button>}</Segment>;
+  return (
+    <Segment>
+      {data && <Button onClick={downloadExport}>Visualizza Export</Button>}
+    </Segment>
+  );
 };

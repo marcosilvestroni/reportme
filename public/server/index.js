@@ -9,12 +9,10 @@ const Registry = require("winreg"),
     hive: Registry.HKCU,
     key: "\\Software\\anthos\\Method\\4.0\\Generale"
   });
-const express = require("express");
 
+const express = require("express");
 const cors = require("cors");
 const path = require("path");
-
-
 const ping = require("ping");
 const fallback = "192.168.1.132"; //"192.168.0.80";
 
@@ -27,13 +25,7 @@ if (process.argv[2] === "--subprocess") {
   let socketName = process.argv[4];
   ipc.init(socketName);
 } else {
-  //const { ipcRenderer, remote } = require("electron");
   isDev = true;
-  //version = remote.app.getVersion();
-
-  /*  ipcRenderer.on("set-socket", (event, { name }) => {
-    ipc.init(name);
-  });  */
 }
 
 const getServerName = () => {
@@ -61,8 +53,8 @@ ping.promise.probe(name, { timeout: 2 }).then(res => {
   });
   const app = express();
   app.use(cors());
-  app.get("/file-export", function (req, res) {
-    res.sendFile(path.join(__dirname,'tmp.csv'));
+  app.get("/file-export", function(req, res) {
+    res.sendFile(path.join(__dirname, "export.csv"));
   });
 
   const server = new ApolloServer({
