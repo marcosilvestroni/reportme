@@ -188,7 +188,7 @@ const Filters = ({ update }) => {
                 }))
               }
               onChange={handleChange}
-              value={filters.pagamento}
+              value={filters.pagamento || ""}
               clearable
             ></Form.Select>
           )}
@@ -204,7 +204,7 @@ const Filters = ({ update }) => {
               }))
             }
             onChange={handleChange}
-            value={filters.tipo}
+            value={filters.tipo || ""}
             clearable
           ></Form.Select>
         </Form.Group>
@@ -222,7 +222,7 @@ const Filters = ({ update }) => {
                 }))
               }
               onChange={handleChange}
-              value={filters.medico}
+              value={filters.medico || ""}
               clearable
             ></Form.Select>
           )}
@@ -232,12 +232,14 @@ const Filters = ({ update }) => {
               label="Solo prestazioni su permanenti"
               onChange={handleChange}
               value={1}
+              checked={filters.denti === 1}
             ></Form.Checkbox>
             <Form.Checkbox
               name="denti"
               label="Solo prestazioni su decidui"
               onChange={handleChange}
               value={2}
+              checked={filters.denti === 2}
             ></Form.Checkbox>
           </Form.Group>
         </Form.Group>
