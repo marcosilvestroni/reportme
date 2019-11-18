@@ -23,7 +23,7 @@ ipcMain.on("max-app", () => {
   clientWin.maximize();
 });
 ipcMain.on("download-export", () => {
-  electron.shell.openItem(app.getAppPath() + "/exports");
+  electron.shell.openItem("C:\\exportsReportMe");
 });
 
 function createWindow(socketName) {

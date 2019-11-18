@@ -265,11 +265,7 @@ module.exports = {
           1}${dtform.getFullYear()}_${dtto.getDate()}${dtto.getMonth() +
           1}${dtto.getFullYear()}.csv`;
 
-        const pathNameFile = path.join(
-          process.env.APP_PATH,
-          "exports",
-          nameFile
-        );
+        const pathNameFile = path.join("C:\\exportsReportMe", nameFile);
 
         dataSources.databaseAPI.getAllPazienti().then(pazienti => {
           const charSequences = pazienti.map(p => p.PZ_ID);
@@ -287,7 +283,7 @@ module.exports = {
             "011010": "11" //COMPASS --non codificato
           };
 
-          const dir = `${process.env.APP_PATH}/exports`;
+          const dir = "C:\\exportsReportMe";
 
           if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
@@ -304,7 +300,7 @@ module.exports = {
                 );
 
                 return {
-                  Codice: calculatedCode,
+                  Codice: calculatedCode === 0 ? 999999 : calculatedCode,  //fix array start from 0 //FUUUUUCK
                   Ragione_Sociale: "",
                   Cognome: row.COGNOME,
                   Nome: row.NOME,
