@@ -300,7 +300,7 @@ module.exports = {
                 );
 
                 return {
-                  Codice: calculatedCode === 0 ? 999999 : calculatedCode,  //fix array start from 0 //FUUUUUCK
+                  Codice: calculatedCode === 0 ? 99999 : calculatedCode,  //fix array start from 0 //FUUUUUCK
                   Ragione_Sociale: "",
                   Cognome: row.COGNOME,
                   Nome: row.NOME,
