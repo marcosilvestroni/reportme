@@ -12,6 +12,12 @@ const createStore = config => {
     define: {
       freezeTableName: true,
       timestamps: false
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
     }
   });
   const medici = db.define("medici", {
@@ -53,6 +59,8 @@ const createStore = config => {
       primaryKey: true
     }
   });
+
+  
 
   return { db, medici, pagamenti, tipoDocumenti, branche, pazienti };
 };

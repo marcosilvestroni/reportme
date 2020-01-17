@@ -58,7 +58,7 @@ function createWindow(socketName) {
     BrowserWindow.addDevToolsExtension(
       path.join(
         os.homedir(),
-        "/.config/chromium/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.0_0"
+        "/.config/chromium/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.4.0_0"
       )
     );
     clientWin.webContents.openDevTools();

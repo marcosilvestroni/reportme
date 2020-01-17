@@ -200,10 +200,10 @@ module.exports = {
           : allRighe.filter(doc => {
               let isDecidui = false;
               doc.DENTI.split(",").forEach(elm => {
-                if (denti === 2 && parseInt(elm) <= 50) {
-                  isDecidui = true;
+                if (denti === 1 && parseInt(elm) <= 50) {
+                  isDecidui = false;
                 }
-                if (denti === 1 && parseInt(elm) >= 50) {
+                if (denti === 2 && parseInt(elm) >= 50) {
                   isDecidui = true;
                 }
               });

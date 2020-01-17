@@ -5,7 +5,6 @@ import Filters from "../components/filters";
 import Summary from "../components/summary";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-
 export const RIGHE_DATA = gql`
   query righe(
     $after: String
@@ -67,9 +66,9 @@ export const RIGHE_DATA = gql`
 export default () => {
   const [filters, updateFilters] = useState({});
   const { data, loading, error, fetchMore } = useQuery(RIGHE_DATA, {
-    variables: filters
+    variables: filters,
+    skip:!filters
   });
-
   if (error) return <p>ERROR : {error.message}</p>;
 
   return (
