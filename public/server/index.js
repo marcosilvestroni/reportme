@@ -62,7 +62,7 @@ ping.promise.probe(name, { timeout: 2 }).then(res => {
 
 
   const knexConfig = {
-    debug: true,
+    //debug: isDev,
     client: "mssql",
     connection: {
       user: "sa",
