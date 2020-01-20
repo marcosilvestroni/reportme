@@ -27,10 +27,8 @@ export const RIGHE_DATA = gql`
       denti: $denti
     ) {
       righe {
-        _id
         NUMERO_RIGA
         PREZZO
-        DESCRIZIONE_RIGA
         DENTI
         MEDICO {
           COGNOME
@@ -39,25 +37,22 @@ export const RIGHE_DATA = gql`
         BRANCA {
           DES_BRANCA
         }
-        FATTURA {
-          _id
-          NUM_FATTURA
-          DATA_FATTURA
-          TIPO_FATTURA
-          COGNOME
+        NUM_FATTURA
+        DATA_FATTURA
+        TIPO_FATTURA
+        PAZIENTE {
           NOME
-          TOTALE
-          PAG_DESC
+          COGNOME
         }
+        PAG_DESC
+        DES_RIGA_DOC
+        DEV_RIGA_DOC
       }
       cursor
       hasMore
       meta {
         totalCount
         totalAmount
-        totalTaxes
-        totalStamps
-        totalServices
       }
     }
   }
@@ -67,9 +62,9 @@ export default () => {
   const [filters, updateFilters] = useState({});
   const { data, loading, error, fetchMore } = useQuery(RIGHE_DATA, {
     variables: filters,
-    skip:!filters
+    skip: !filters
   });
-  if (error) return <p>ERROR : {error.message}</p>;
+  if (error) console.log(error.message);
 
   return (
     <Segment loading={loading}>
@@ -77,9 +72,7 @@ export default () => {
         <Grid.Column>
           <Filters update={updateFilters} />
         </Grid.Column>
-        <Grid.Column>
-          {data && <Summary meta={data.righe.meta} />}
-        </Grid.Column>
+        <Grid.Column>{data && <Summary meta={data.righe.meta} />}</Grid.Column>
       </Grid>
 
       {data && <Accounting data={data.righe.righe} />}
@@ -97,10 +90,7 @@ export default () => {
                   ...fetchMoreResult,
                   righe: {
                     ...fetchMoreResult.righe,
-                    righe: [
-                      ...prev.righe.righe,
-                      ...fetchMoreResult.righe.righe
-                    ]
+                    righe: [...prev.righe.righe, ...fetchMoreResult.righe.righe]
                   }
                 };
               }

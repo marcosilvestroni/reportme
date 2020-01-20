@@ -5,8 +5,9 @@ import { parseCurrency, toDate } from "./utils";
 
 function Acconting({ data }) {
   const headers = [
-    "Num. fattura",
-    "Data Fattura",
+    "Num. Documento",
+    "Data Documento",
+    "Tipo Documento",
     "Paziente",
     "Medico",
     "Branca",
@@ -31,18 +32,19 @@ function Acconting({ data }) {
           {data.map((row, index) => {
             return (
               <Table.Row key={index}>
-                <Table.Cell>{row.FATTURA.NUM_FATTURA}</Table.Cell>
-                <Table.Cell>{toDate(row.FATTURA.DATA_FATTURA)}</Table.Cell>
+                <Table.Cell>{row.NUM_FATTURA}</Table.Cell>
+                <Table.Cell>{toDate(row.DATA_FATTURA)}</Table.Cell>
+                <Table.Cell>{row.TIPO_FATTURA}</Table.Cell>
                 <Table.Cell>
-                  {row.FATTURA.COGNOME} {row.FATTURA.NOME}
+                  {row.PAZIENTE.COGNOME} {row.PAZIENTE.NOME}
                 </Table.Cell>
                 <Table.Cell>
                   {row.MEDICO && `${row.MEDICO.COGNOME} ${row.MEDICO.NOME}`}
                 </Table.Cell>
-                <Table.Cell>{row.BRANCA.DES_BRANCA}</Table.Cell>
-                <Table.Cell>{row.DESCRIZIONE_RIGA}</Table.Cell>
+                <Table.Cell>{row.BRANCA ? row.BRANCA.DES_BRANCA: ''}</Table.Cell>
+                <Table.Cell>{row.DES_RIGA_DOC} {row.DEV_RIGA_DOC}</Table.Cell>
                 <Table.Cell>{parseCurrency(row.PREZZO)}</Table.Cell>
-                <Table.Cell>{row.FATTURA.PAG_DESC}</Table.Cell>
+                <Table.Cell>{row.PAG_DESC}</Table.Cell>
               </Table.Row>
             );
           })}

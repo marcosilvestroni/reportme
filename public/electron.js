@@ -51,7 +51,7 @@ function createWindow(socketName) {
   });
 
   //react dev tools
-  if (
+  /* if (
     isDev &&
     !("React Developer Tools" in BrowserWindow.getDevToolsExtensions())
   ) {
@@ -62,7 +62,7 @@ function createWindow(socketName) {
       )
     );
     clientWin.webContents.openDevTools();
-  }
+  } */
 }
 
 function createBackgroundProcess(socketName) {

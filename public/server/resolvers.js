@@ -5,126 +5,16 @@ const fs = require("fs");
 
 module.exports = {
   Query: {
-    medici: (_, __, { dataSources }) => dataSources.databaseAPI.getAllMedici(),
+    medici: (_, __, { dataSources }) => dataSources.testAPI.getMedici(),
+    pagamenti: (_, __, { dataSources }) => dataSources.testAPI.getPagamenti(),
+    tipoDocumenti: (_, __, { dataSources }) =>
+      dataSources.testAPI.getTipoDocumenti(),
+    branche: (_, __, { dataSources }) => dataSources.testAPI.getBranche(),
     fattura: (_, { numero, date }, { dataSources }) => {
       return dataSources.databaseAPI.getAllFatture().then(results => {
         return results.filter(doc => doc.NUM_FATTURA === numero);
       });
     },
-    fatture: async (
-      _,
-      {
-        pageSize = 20,
-        after,
-        medico,
-        pagamento,
-        tipo,
-        fromDate,
-        toDate,
-        branche = [],
-        forRow = false
-      },
-      { dataSources }
-    ) => {
-      const righeFattura = await dataSources.databaseAPI.getAllRigheFatture();
-      return dataSources.databaseAPI.getAllFatture().then(results => {
-        const applyFilter = (dataset, check) => {
-          return dataset.filter(check);
-        };
-        let allFatture = applyFilter(results, doc => true);
-        let totalCount = 0,
-          totalAmount = 0,
-          totalTaxes = 0,
-          totalStamps = 0,
-          totalServices = 0;
-
-        if (
-          !pagamento &&
-          !tipo &&
-          !fromDate &&
-          !toDate &&
-          !medico &&
-          branche.length === 0
-        ) {
-          allFatture = [];
-        }
-
-        allFatture = pagamento
-          ? allFatture.filter(doc => doc.PAG_COD === pagamento)
-          : allFatture;
-        allFatture = tipo
-          ? allFatture.filter(doc => doc.TIPO_FATTURA === tipo)
-          : allFatture;
-        allFatture = fromDate
-          ? allFatture.filter(doc => {
-              const dt = new Date(doc.DATA_FATTURA);
-              return dt.getTime() >= fromDate;
-            })
-          : allFatture;
-        allFatture = toDate
-          ? allFatture.filter(doc => {
-              const dt = new Date(doc.DATA_FATTURA);
-              return dt.getTime() <= toDate;
-            })
-          : allFatture;
-
-        allFatture = !medico
-          ? allFatture
-          : !forRow
-          ? allFatture.filter(doc => doc.MED_ID === medico)
-          : allFatture.filter(doc =>
-              righeFattura
-                .filter(row => row.MED_ID === medico)
-                .map(elm => elm._refFattura)
-                .includes(doc._id)
-            );
-
-        allFatture =
-          branche.length === 0
-            ? allFatture
-            : allFatture.filter(doc =>
-                righeFattura
-                  .filter(row => branche.includes(row.BRANCA))
-                  .map(elm => elm._refFattura)
-                  .includes(doc._id)
-              );
-
-        allFatture.forEach(doc => {
-          totalAmount += doc.TOTALE;
-          totalTaxes += doc.IMPOSTA;
-          totalStamps += doc.BOLLI;
-          totalServices += doc.PRESTAZIONI;
-        });
-        totalCount = allFatture.length;
-
-        const fatture = paginateResults({
-          after,
-          pageSize,
-          results: allFatture
-        });
-        return {
-          fatture,
-          cursor: fatture.length ? fatture[fatture.length - 1]._id : null,
-          hasMore: fatture.length
-            ? fatture[fatture.length - 1]._id !==
-              allFatture[allFatture.length - 1]._id
-            : false,
-          meta: {
-            totalCount,
-            totalAmount,
-            totalTaxes,
-            totalStamps,
-            totalServices
-          }
-        };
-      });
-    },
-    pagamenti: (_, __, { dataSources }) =>
-      dataSources.databaseAPI.getAllPagamenti(),
-    tipoDocumenti: (_, __, { dataSources }) =>
-      dataSources.databaseAPI.getAllTipoDocumenti(),
-    branche: (_, __, { dataSources }) =>
-      dataSources.databaseAPI.getAllBranche(),
     righe: (
       _,
       {
@@ -140,104 +30,30 @@ module.exports = {
       },
       { dataSources }
     ) => {
-      return dataSources.databaseAPI.getAllRigheFatture().then(results => {
-        let allRighe = [];
+      return dataSources.testAPI
+        .getRighe(medico, pagamento, tipo, fromDate, toDate, branche, denti)
+        .then(results => {
+          let totalAmount = 0;
+          results.forEach(item => (totalAmount += item.PREZZO));
 
-        let totalCount = 0,
-          totalAmount = 0,
-          totalTaxes = 0,
-          totalStamps = 0,
-          totalServices = 0;
+          const righe = paginateResults({
+            after,
+            pageSize,
+            results
+          });
 
-        if (
-          !pagamento &&
-          !tipo &&
-          !fromDate &&
-          !toDate &&
-          !medico &&
-          branche.length === 0 &&
-          !denti
-        ) {
-          allRighe = [];
-        } else {
-          allRighe = results.filter(doc => doc.FATTURA);
-        }
-
-        allRighe = pagamento
-          ? allRighe.filter(doc => doc.FATTURA.PAG_COD === pagamento)
-          : allRighe;
-
-        allRighe = tipo
-          ? allRighe.filter(doc => doc.FATTURA.TIPO_FATTURA === tipo)
-          : allRighe;
-
-        allRighe = fromDate
-          ? allRighe.filter(doc => {
-              const dt = new Date(doc.FATTURA.DATA_FATTURA);
-              return dt.getTime() >= fromDate;
-            })
-          : allRighe;
-
-        allRighe = toDate
-          ? allRighe.filter(doc => {
-              const dt = new Date(doc.FATTURA.DATA_FATTURA);
-              return dt.getTime() <= toDate;
-            })
-          : allRighe;
-
-        allRighe = !medico
-          ? allRighe
-          : allRighe.filter(doc => doc.MED_ID === medico);
-
-        allRighe =
-          branche.length === 0
-            ? allRighe
-            : allRighe.filter(doc => branche.includes(doc.BRANCA));
-        //permanenti 1x-4x
-        //decidui 5x-8x\
-        allRighe = !denti
-          ? allRighe
-          : allRighe.filter(doc => {
-              let isDecidui = false;
-              doc.DENTI.split(",").forEach(elm => {
-                if (denti === 1 && parseInt(elm) <= 50) {
-                  isDecidui = false;
-                }
-                if (denti === 2 && parseInt(elm) >= 50) {
-                  isDecidui = true;
-                }
-              });
-              return isDecidui;
-            });
-
-        allRighe.forEach(doc => {
-          totalAmount += doc.PREZZO;
-          //totalTaxes += doc.FATTURA.IMPOSTA;
-          //totalStamps += doc.FATTURA.BOLLI;
-          //totalServices += doc.FATTURA.PRESTAZIONI;
+          return {
+            righe,
+            cursor: righe.length ? righe[righe.length - 1].ID : null,
+            hasMore: righe.length
+              ? righe[righe.length - 1].ID !== results[results.length - 1].ID
+              : false,
+            meta: {
+              totalCount: results.length,
+              totalAmount
+            }
+          };
         });
-        totalCount = allRighe.length;
-
-        const righe = paginateResults({
-          after,
-          pageSize,
-          results: allRighe
-        });
-        return {
-          righe,
-          cursor: righe.length ? righe[righe.length - 1]._id : null,
-          hasMore: righe.length
-            ? righe[righe.length - 1]._id !== allRighe[allRighe.length - 1]._id
-            : false,
-          meta: {
-            totalCount,
-            totalAmount,
-            totalTaxes,
-            totalStamps,
-            totalServices
-          }
-        };
-      });
     },
     export: (_, { fromDate, toDate }, { dataSources }) => {
       return dataSources.databaseAPI.getAllFatture().then(results => {
@@ -300,7 +116,7 @@ module.exports = {
                 );
 
                 return {
-                  Codice: calculatedCode === 0 ? 99999 : calculatedCode,  //fix array start from 0 //FUUUUUCK
+                  Codice: calculatedCode === 0 ? 99999 : calculatedCode, //fix array start from 0 //FUUUUUCK
                   Ragione_Sociale: "",
                   Cognome: row.COGNOME,
                   Nome: row.NOME,
@@ -351,20 +167,38 @@ module.exports = {
     }
   },
   RigheFattura: {
-    MEDICO: ({ MED_ID }, _, { dataSources }) => {
-      return dataSources.databaseAPI.getAllMedici().then(results => {
-        return results.filter(elm => elm.MED_ID === MED_ID)[0];
-      });
+    MEDICO: ({ MED_ID, MEDICO_FATTURA }, _, { dataSources }) => {
+      if (MED_ID) {
+        return dataSources.testAPI.getMedici(MED_ID).then(res => {
+          return res[0];
+        });
+      } else {
+        if (MEDICO_FATTURA) {
+          return dataSources.testAPI.getMedici(MEDICO_FATTURA).then(res => {
+            return res[0];
+          });
+        }
+      }
     },
     BRANCA: ({ BRANCA }, _, { dataSources }) => {
-      return dataSources.databaseAPI.getAllBranche().then(results => {
-        return results.filter(elm => elm.BRANCA === BRANCA)[0];
-      });
+      if (BRANCA) {
+        return dataSources.testAPI.getBranche(BRANCA).then(res => {
+          return res[0];
+        });
+      }
     },
-    FATTURA: ({ _refFattura }, _, { dataSources }) => {
-      return dataSources.databaseAPI.getAllFatture().then(results => {
-        return results.filter(elm => elm._id === _refFattura)[0];
-      });
+    PAZIENTE: ({ PZ_ID, PZ_FATTURA }, _, { dataSources }) => {
+      if (PZ_ID) {
+        return dataSources.testAPI.getPazienti(PZ_ID).then(res => {
+          return res[0];
+        });
+      } else {
+        if (PZ_FATTURA) {
+          return dataSources.testAPI.getPazienti(PZ_FATTURA).then(res => {
+            return res[0];
+          });
+        }
+      }
     }
   }
 };

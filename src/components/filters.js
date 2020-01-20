@@ -45,10 +45,10 @@ const Filters = ({ update }) => {
 
   const handleChange = (e, { name, value }) => {
     let updateVal = value;
-    if (["fromDate", "toDate"].includes(name)) {
+    /* if (["fromDate", "toDate"].includes(name)) {
       const dateVal = new Date(value);
       updateVal = dateVal.getTime();
-    }
+    } */
     setFilters({ ...filters, [name]: updateVal });
   };
 
