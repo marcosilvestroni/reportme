@@ -1,6 +1,6 @@
 const { SQLDataSource } = require("datasource-sql");
 
-const TIMING = 0;
+const TIMING = 60;
 
 class sqlApi extends SQLDataSource {
   getMedici(id) {
