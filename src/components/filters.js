@@ -226,22 +226,28 @@ const Filters = ({ update }) => {
               clearable
             ></Form.Select>
           )}
-          <Form.Group>
-            <Form.Checkbox
+          <Form.Select
+              label="Permanenti/Decidui"
               name="denti"
-              label="Solo prestazioni su permanenti"
+              options={[
+                {
+                  value: 0,
+                  text: "Tutti"
+                },
+                {
+                  value: 1,
+                  text: "solo Permanenti"
+                },
+                {
+                  value: 2,
+                  text: "solo Decidui"
+                }
+              ]}
               onChange={handleChange}
-              value={1}
-              checked={filters.denti === 1}
-            ></Form.Checkbox>
-            <Form.Checkbox
-              name="denti"
-              label="Solo prestazioni su decidui"
-              onChange={handleChange}
-              value={2}
-              checked={filters.denti === 2}
-            ></Form.Checkbox>
-          </Form.Group>
+              value={filters.denti || ""}
+              clearable
+            ></Form.Select>
+          
         </Form.Group>
         <Form.Group widths="equal">
           {data && (
