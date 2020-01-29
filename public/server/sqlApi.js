@@ -1,6 +1,6 @@
 const { SQLDataSource } = require("datasource-sql");
 
-const TIMING = 60;
+const TIMING = 0;
 
 class sqlApi extends SQLDataSource {
   getMedici(id) {
@@ -201,6 +201,20 @@ class sqlApi extends SQLDataSource {
       })
       .andWhere(function() {
         if (branche.length > 0) this.whereIn("schede_righe.BRANCA", branche);
+      })
+      .andWhere(function() {
+        if (fromDate) {
+          const fd = new Date(fromDate);
+
+          this.where("CAXX_DOCTST.DAT_STP_DEFINITIVA", ">=", fd);
+        }
+      })
+      .andWhere(function() {
+        if (toDate) {
+          const td = new Date(toDate);
+
+          this.where("CAXX_DOCTST.DAT_STP_DEFINITIVA", "<=", td);
+        }
       })
       .andWhere(function() {
         if (fromDate && toDate) {

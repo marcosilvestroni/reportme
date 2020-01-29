@@ -62,7 +62,7 @@ ping.promise.probe(name, { timeout: 2 }).then(res => {
 
 
   const knexConfig = {
-    //debug: true,
+    debug: true,
     client: "mssql",
     connection: {
       user: "sa",
@@ -83,10 +83,10 @@ ping.promise.probe(name, { timeout: 2 }).then(res => {
       databaseAPI: new databaseAPI({ store }),
       testAPI : new sqlApi(knexConfig) 
     }),
-    engine: {
+    /* engine: {
       apiKey: "service:reportMe:OrLQUEuzQG9r1Tb1ms0eTw",
     },
-    tracing: true,
+    tracing: true, */
   });
 
   server.applyMiddleware({ app });

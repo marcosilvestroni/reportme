@@ -63,6 +63,9 @@ function createWindow(socketName) {
     );
     clientWin.webContents.openDevTools();
   } */
+
+  clientWin.webContents.openDevTools();
+
 }
 
 function createBackgroundProcess(socketName) {

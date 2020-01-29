@@ -55,27 +55,31 @@ export const RIGHE_DATA = gql`
         totalAmount
       }
     }
+    tipoDocumenti {
+      CDA_MODULO
+      DES_MODULO
+    }
   }
 `;
 
 export default () => {
   const [filters, updateFilters] = useState({});
-  const { data, loading, error, fetchMore } = useQuery(RIGHE_DATA, {
+  const { data, loading, fetchMore } = useQuery(RIGHE_DATA, {
     variables: filters,
-    skip: !filters
   });
-  if (error) console.log(error.message);
+  
 
+  
   return (
     <Segment loading={loading}>
       <Grid divided columns="equal">
         <Grid.Column>
-          <Filters update={updateFilters} />
+          <Filters update={updateFilters} filters={filters} />
         </Grid.Column>
         <Grid.Column>{data && <Summary meta={data.righe.meta} />}</Grid.Column>
       </Grid>
 
-      {data && <Accounting data={data.righe.righe} />}
+      {data && <Accounting data={data.righe.righe} typesDoc={data.tipoDocumenti}/>}
       {data && data.righe && data.righe.hasMore && (
         <Button
           onClick={() =>

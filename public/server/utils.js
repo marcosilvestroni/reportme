@@ -1,6 +1,6 @@
 module.exports.paginateResults = ({
   after: cursor,
-  pageSize = 20,
+  pageSize = 50,
   results
 }) => {
   if (pageSize < 1) return [];
