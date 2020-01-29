@@ -50,21 +50,6 @@ function createWindow(socketName) {
     });
   });
 
-  //react dev tools
-  /* if (
-    isDev &&
-    !("React Developer Tools" in BrowserWindow.getDevToolsExtensions())
-  ) {
-    BrowserWindow.addDevToolsExtension(
-      path.join(
-        os.homedir(),
-        "/.config/chromium/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.4.0_0"
-      )
-    );
-    clientWin.webContents.openDevTools();
-  } */
-
-  clientWin.webContents.openDevTools();
 
 }
 
