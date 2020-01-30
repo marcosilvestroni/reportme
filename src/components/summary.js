@@ -24,34 +24,6 @@ export default ({ meta }) => {
                 <Header as="h4">{meta.totalCount}</Header>
               </Table.Cell>
             </Table.Row>
-            {/* <Table.Row>
-              <Table.Cell>
-                <Header as="h4" image>
-                  {"Prestazioni/imponibile"}
-                </Header>
-              </Table.Cell>
-              <Table.Cell textAlign="right">
-                <Header as="h4">{parseCurrency(meta.totalServices)}</Header>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>
-                <Header as="h4" >
-                  {"Iva"}
-                </Header>
-              </Table.Cell>
-              <Table.Cell textAlign="right">
-                <Header as="h4">{parseCurrency(meta.totalTaxes)}</Header>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>
-                <Header as="h4">{"Bolli"}</Header>
-              </Table.Cell>
-              <Table.Cell textAlign="right">
-                <Header as="h4">{parseCurrency(meta.totalStamps)}</Header>
-              </Table.Cell>
-            </Table.Row>*/}
             <Table.Row>
               <Table.Cell>
                 <Header as="h3">{"Totale"}</Header>
@@ -75,7 +47,7 @@ export default ({ meta }) => {
                 ></Form.Input>
               </Table.Cell>
             </Table.Row>
-            {total && (
+            {total>0 && (
               <Table.Row>
                 <Table.Cell >
                   <Header as="h4">{"Importo dovuto al professionista"}</Header>

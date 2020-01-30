@@ -27,10 +27,8 @@ export const RIGHE_DATA = gql`
       denti: $denti
     ) {
       righe {
-        _id
         NUMERO_RIGA
         PREZZO
-        DESCRIZIONE_RIGA
         DENTI
         MEDICO {
           COGNOME
@@ -39,50 +37,49 @@ export const RIGHE_DATA = gql`
         BRANCA {
           DES_BRANCA
         }
-        FATTURA {
-          _id
-          NUM_FATTURA
-          DATA_FATTURA
-          TIPO_FATTURA
-          COGNOME
+        NUM_FATTURA
+        DATA_FATTURA
+        TIPO_FATTURA
+        PAZIENTE {
           NOME
-          TOTALE
-          PAG_DESC
+          COGNOME
         }
+        PAG_DESC
+        DES_RIGA_DOC
+        DEV_RIGA_DOC
       }
       cursor
       hasMore
       meta {
         totalCount
         totalAmount
-        totalTaxes
-        totalStamps
-        totalServices
       }
+    }
+    tipoDocumenti {
+      CDA_MODULO
+      DES_MODULO
     }
   }
 `;
 
 export default () => {
   const [filters, updateFilters] = useState({});
-  const { data, loading, error, fetchMore } = useQuery(RIGHE_DATA, {
+  const { data, loading, fetchMore } = useQuery(RIGHE_DATA, {
     variables: filters,
-    skip:!filters
   });
-  if (error) return <p>ERROR : {error.message}</p>;
+  
 
+  
   return (
     <Segment loading={loading}>
       <Grid divided columns="equal">
         <Grid.Column>
-          <Filters update={updateFilters} />
+          <Filters update={updateFilters} filters={filters} />
         </Grid.Column>
-        <Grid.Column>
-          {data && <Summary meta={data.righe.meta} />}
-        </Grid.Column>
+        <Grid.Column>{data && <Summary meta={data.righe.meta} />}</Grid.Column>
       </Grid>
 
-      {data && <Accounting data={data.righe.righe} />}
+      {data && <Accounting data={data.righe.righe} typesDoc={data.tipoDocumenti}/>}
       {data && data.righe && data.righe.hasMore && (
         <Button
           onClick={() =>
@@ -97,10 +94,7 @@ export default () => {
                   ...fetchMoreResult,
                   righe: {
                     ...fetchMoreResult.righe,
-                    righe: [
-                      ...prev.righe.righe,
-                      ...fetchMoreResult.righe.righe
-                    ]
+                    righe: [...prev.righe.righe, ...fetchMoreResult.righe.righe]
                   }
                 };
               }

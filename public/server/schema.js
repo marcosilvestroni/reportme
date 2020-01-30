@@ -1,5 +1,6 @@
 const { gql } = require("apollo-server");
 
+
 module.exports = gql`
   type Query {
     medici: [Medici]!
@@ -92,16 +93,23 @@ module.exports = gql`
   }
 
   type RigheFattura {
-    _id: ID
-    _refFattura: String
+    ID:String
     CODICE_LISTINO: String
     MEDICO: Medici
     BRANCA: Branche
     PREZZO: String
     DENTI: String
-    DESCRIZIONE_RIGA: String
+    DES_RIGA_DOC: String
+    DEV_RIGA_DOC: String
     NUMERO_RIGA: String
-    FATTURA: Fatture
+    NUM_FATTURA: String
+    DATA_FATTURA: String
+    TIPO_FATTURA: String
+    PAZIENTE: Paziente
+    PAG_DESC: String
+    PAG_COD: String
+    PZ_FATTURA: String
+    MEDICO_FATTURA:String
   }
   type RigheConnection {
     cursor: String
@@ -115,5 +123,11 @@ module.exports = gql`
     totalTaxes: Float
     totalStamps: Float
     totalServices: Float
+  }
+
+  type Paziente {
+    PZ_ID: String
+    NOME: String
+    COGNOME: String
   }
 `;

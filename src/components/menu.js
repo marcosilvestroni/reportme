@@ -25,7 +25,7 @@ const MenuCustom = ({ children }) => {
       </Menu>
 
       {router[active]}
-      <p>Connected to server: {window.serverName || 'hardcoded server'}</p>
+      
     </div>
   );
 };

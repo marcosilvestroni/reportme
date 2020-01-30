@@ -16,6 +16,10 @@ const path = require("path");
 const ping = require("ping");
 const fallback = "192.168.0.80"; //"192.168.0.80";
 
+
+
+const sqlApi = require('./sqlApi')
+
 let isDev, version;
 
 if (process.argv[2] === "--subprocess") {
@@ -56,12 +60,33 @@ ping.promise.probe(name, { timeout: 2 }).then(res => {
     res.sendFile(path.join(__dirname, "export.csv"));
   });
 
+
+  const knexConfig = {
+    //debug: true,
+    client: "mssql",
+    connection: {
+      user: "sa",
+      password: "startup",
+      server: host,
+      database: "DB1_01",
+      options: {
+        instanceName: "MSSQLSERVER",
+        tdsVersion: "7_1"
+      }
+    }
+  }
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
     dataSources: () => ({
-      databaseAPI: new databaseAPI({ store })
-    })
+      databaseAPI: new databaseAPI({ store }),
+      testAPI : new sqlApi(knexConfig) 
+    }),
+    /* engine: {
+      apiKey: "service:reportMe:OrLQUEuzQG9r1Tb1ms0eTw",
+    },
+    tracing: true, */
   });
 
   server.applyMiddleware({ app });

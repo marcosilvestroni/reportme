@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-//import PropTypes from "prop-types";
+import React from "react";
 import { Form, Header, Divider, Button } from "semantic-ui-react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
@@ -27,29 +26,28 @@ export const FILTERS_DATA = gql`
   }
 `;
 
-const Filters = ({ update }) => {
-  const [filters, setFilters] = useState({});
+const Filters = ({ update ,filters}) => {
+
   const { data, loading, error } = useQuery(FILTERS_DATA);
 
   if (error) return <p>ERROR : {error.message}</p>;
 
   if (loading) return <p>LOADING</p>;
 
-  const applyFilters = () => {
-    update(filters);
-  };
-  const resetFilters = () => {
-    setFilters({});
-    update({});
-  };
-
   const handleChange = (e, { name, value }) => {
-    let updateVal = value;
-    if (["fromDate", "toDate"].includes(name)) {
-      const dateVal = new Date(value);
-      updateVal = dateVal.getTime();
+    let newFilters = {...filters};
+    
+    if ((Array.isArray(value) && !value.length) || !value) {
+      delete newFilters[name];
+    } else {
+      let updateVal = value;
+      if (["fromDate", "toDate"].includes(name)) {
+        const dateVal = new Date(value);
+        updateVal = dateVal.getTime();
+      }
+      newFilters = { ...newFilters, [name]: updateVal };
     }
-    setFilters({ ...filters, [name]: updateVal });
+    update({...newFilters});
   };
 
   const parseForDateInput = val => {
@@ -59,44 +57,10 @@ const Filters = ({ update }) => {
     }
   };
 
-  const applyPresetDates = preset => {
-    const dt = new Date();
-    const withPreset = {
-      today: () => {
-        const from = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 2);
-        setFilters({
-          ...filters,
-          fromDate: from.getTime(),
-          toDate: dt.getTime()
-        });
-      },
-      thisMonth: () => {
-        const from = new Date();
-        from.setDate(1);
-        setFilters({
-          ...filters,
-          fromDate: from.getTime(),
-          toDate: dt.getTime()
-        });
-      },
-      lastThreeMonths: () => {
-        const from = new Date();
-        from.setMonth(from.getMonth() - 3);
-        setFilters({
-          ...filters,
-          fromDate: from.getTime(),
-          toDate: dt.getTime()
-        });
-      }
-    };
-
-    withPreset[preset]();
-  };
-
   const applyPresetBranche = preset => {
     const withPreset = {
       poliambulatorio: () => {
-        setFilters({
+        update({
           ...filters,
           branche: [
             "14",
@@ -117,7 +81,7 @@ const Filters = ({ update }) => {
         });
       },
       odontoiatria: () => {
-        setFilters({
+        update({
           ...filters,
           branche: [
             "01",
@@ -140,39 +104,32 @@ const Filters = ({ update }) => {
     withPreset[preset]();
   };
 
+  
   return (
     <div className="printme">
       <Header tag="h3">Selezione</Header>
       <Divider />
       <Form id="filters" loading={loading}>
-        <Form.Group>
-          <Button.Group widths="3" basic>
-            <Button onClick={() => applyPresetDates("today")}>Oggi</Button>
-            <Button onClick={() => applyPresetDates("thisMonth")}>
-              Questo Mese
-            </Button>
-            <Button onClick={() => applyPresetDates("lastThreeMonths")}>
-              Ultimo Trimetre
-            </Button>
-          </Button.Group>
-        </Form.Group>
-
         <Form.Group widths={2}>
           <Form.Input
             label="Da data"
             type="date"
             name="fromDate"
             onChange={handleChange}
-            defaultValue={parseForDateInput(filters.fromDate)}
+            defaultValue={
+              parseForDateInput(filters.fromDate)
+            }
           ></Form.Input>
           <Form.Input
             label="A data"
             type="date"
             name="toDate"
             onChange={handleChange}
-            defaultValue={parseForDateInput(filters.toDate)}
+            defaultValue={
+              parseForDateInput(filters.toDate) 
+            }
           ></Form.Input>
-        </Form.Group>
+        </Form.Group> 
 
         <Form.Group widths={2}>
           {data && (
@@ -188,7 +145,7 @@ const Filters = ({ update }) => {
                 }))
               }
               onChange={handleChange}
-              value={filters.pagamento || ""}
+              defaultValue={filters.pagamento}
               clearable
             ></Form.Select>
           )}
@@ -204,7 +161,7 @@ const Filters = ({ update }) => {
               }))
             }
             onChange={handleChange}
-            value={filters.tipo || ""}
+            defaultValue={filters.tipo || ""}
             clearable
           ></Form.Select>
         </Form.Group>
@@ -222,26 +179,27 @@ const Filters = ({ update }) => {
                 }))
               }
               onChange={handleChange}
-              value={filters.medico || ""}
+              defaultValue={filters.medico || ""}
               clearable
             ></Form.Select>
           )}
-          <Form.Group>
-            <Form.Checkbox
-              name="denti"
-              label="Solo prestazioni su permanenti"
-              onChange={handleChange}
-              value={1}
-              checked={filters.denti === 1}
-            ></Form.Checkbox>
-            <Form.Checkbox
-              name="denti"
-              label="Solo prestazioni su decidui"
-              onChange={handleChange}
-              value={2}
-              checked={filters.denti === 2}
-            ></Form.Checkbox>
-          </Form.Group>
+          <Form.Select
+            label="Permanenti/Decidui"
+            name="denti"
+            options={[
+              {
+                value: 1,
+                text: "solo Permanenti"
+              },
+              {
+                value: 2,
+                text: "solo Decidui"
+              }
+            ]}
+            onChange={handleChange}
+            defaultValue={filters.denti || ""}
+            clearable
+          ></Form.Select>
         </Form.Group>
         <Form.Group widths="equal">
           {data && (
@@ -275,18 +233,7 @@ const Filters = ({ update }) => {
             </Button>
           </Button.Group>
         </Form.Group>
-
-        <Form.Group>
-          <Button.Group widths="2">
-            <Button size="large" secondary onClick={resetFilters}>
-              Reset filtri
-            </Button>
-            <Button size="large" primary onClick={applyFilters}>
-              Applica filtri
-            </Button>
-          </Button.Group>
-        </Form.Group>
-      </Form>
+     </Form>
     </div>
   );
 };
