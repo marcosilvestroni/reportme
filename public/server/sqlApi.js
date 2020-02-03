@@ -236,17 +236,17 @@ class sqlApi extends SQLDataSource {
               "like",
               ",1%"
             );
-            this.andWhere("DENTI_VIS", "like", "2%").orWhere(
+            this.orWhere("DENTI_VIS", "like", "2%").orWhere(
               "DENTI_VIS",
               "like",
               ",2%"
             );
-            this.andWhere("DENTI_VIS", "like", "3%").orWhere(
+            this.orWhere("DENTI_VIS", "like", "3%").orWhere(
               "DENTI_VIS",
               "like",
               ",3%"
             );
-            this.andWhere("DENTI_VIS", "like", "4%").orWhere(
+            this.orWhere("DENTI_VIS", "like", "4%").orWhere(
               "DENTI_VIS",
               "like",
               ",4%"
@@ -257,17 +257,17 @@ class sqlApi extends SQLDataSource {
               "like",
               ",5%"
             );
-            this.andWhere("DENTI_VIS", "like", "6%").orWhere(
+            this.orWhere("DENTI_VIS", "like", "6%").orWhere(
               "DENTI_VIS",
               "like",
               ",6%"
             );
-            this.andWhere("DENTI_VIS", "like", "7%").orWhere(
+            this.orWhere("DENTI_VIS", "like", "7%").orWhere(
               "DENTI_VIS",
               "like",
               ",7%"
             );
-            this.andWhere("DENTI_VIS", "like", "8%").orWhere(
+            this.orWhere("DENTI_VIS", "like", "8%").orWhere(
               "DENTI_VIS",
               "like",
               ",8%"
