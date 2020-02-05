@@ -69,6 +69,48 @@ export default () => {
     variables: filters,
   });
   
+  let groupedRows = [];
+  let marks = 0;
+  
+
+  const groupRows = data => {
+    const grouped = [];
+    data.forEach(head => {
+      if (
+        grouped.findIndex(elm => {
+          return (
+            elm.NUM_FATTURA === head.NUM_FATTURA &&
+            elm.DATA_FATTURA === head.DATA_FATTURA
+          );
+        }) === -1
+      ) {
+        let sumRows = 0;
+        marks += parseInt(head.BOLLI)
+        grouped.push({
+          NUM_FATTURA: head.NUM_FATTURA,
+          DATA_FATTURA: head.DATA_FATTURA,
+          TIPO_FATTURA: head.TIPO_FATTURA,
+          RIGHE: data.filter(row => {
+            if (
+              row.NUM_FATTURA === head.NUM_FATTURA &&
+              row.DATA_FATTURA === head.DATA_FATTURA
+            ) {
+              sumRows += parseFloat(row.PREZZO);
+              return true;
+            }
+            return false;
+          }),
+          TOTALE: sumRows,
+          PAGAMENTO: head.PAG_DESC,
+          BOLLI: head.BOLLI
+        });
+      }
+    });
+    return grouped;
+  };
+  if (data) {
+    groupedRows = groupRows(data.righe.righe)
+  }
 
   
   return (
@@ -77,10 +119,10 @@ export default () => {
         <Grid.Column>
           <Filters update={updateFilters} filters={filters} />
         </Grid.Column>
-        <Grid.Column>{data && <Summary meta={data.righe.meta} />}</Grid.Column>
+        <Grid.Column>{data && <Summary meta={{totalAmount:parseFloat(data.righe.meta.totalAmount)+parseFloat(marks)}} />}</Grid.Column>
       </Grid>
 
-      {data && <Accounting data={data.righe.righe} typesDoc={data.tipoDocumenti}/>}
+      {data && <Accounting data={groupedRows} typesDoc={data.tipoDocumenti}/>}
       {data && data.righe && data.righe.hasMore && (
         <Button
           onClick={() =>

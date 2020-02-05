@@ -13,47 +13,11 @@ function Acconting({ data, typesDoc }) {
     "Prezzo"
   ];
 
-  const groupRows = data => {
-    const grouped = [];
-
-    data.forEach(head => {
-      if (
-        grouped.findIndex(elm => {
-          return (
-            elm.NUM_FATTURA === head.NUM_FATTURA &&
-            elm.DATA_FATTURA === head.DATA_FATTURA
-          );
-        }) === -1
-      ) {
-        let sumRows = 0;
-        grouped.push({
-          NUM_FATTURA: head.NUM_FATTURA,
-          DATA_FATTURA: head.DATA_FATTURA,
-          TIPO_FATTURA: head.TIPO_FATTURA,
-          RIGHE: data.filter(row => {
-            if (
-              row.NUM_FATTURA === head.NUM_FATTURA &&
-              row.DATA_FATTURA === head.DATA_FATTURA
-            ) {
-              sumRows += parseFloat(row.PREZZO);
-              return true;
-            }
-            return false;
-          }),
-          TOTALE: sumRows,
-          PAGAMENTO: head.PAG_DESC,
-          BOLLI: head.BOLLI
-        });
-      }
-    });
-    return grouped;
-  };
-
   return (
     <Segment>
       <Header tag="h2">Documenti</Header>
 
-      {groupRows(data).map((head, index) => (
+      {data.map((head, index) => (
         <div key={index}>
           <Table color="blue" className="printme" inverted>
             <Table.Header>
