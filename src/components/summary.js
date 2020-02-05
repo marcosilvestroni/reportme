@@ -16,14 +16,7 @@ export default ({ meta }) => {
       <Container>
         <Table basic="very" celled>
           <Table.Body>
-            <Table.Row>
-              <Table.Cell>
-                <Header as="h4">{"Numero Documenti"}</Header>
-              </Table.Cell>
-              <Table.Cell textAlign="right">
-                <Header as="h4">{meta.totalCount}</Header>
-              </Table.Cell>
-            </Table.Row>
+            
             <Table.Row>
               <Table.Cell>
                 <Header as="h3">{"Totale"}</Header>

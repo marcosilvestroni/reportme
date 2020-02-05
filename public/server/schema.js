@@ -110,6 +110,7 @@ module.exports = gql`
     PAG_COD: String
     PZ_FATTURA: String
     MEDICO_FATTURA:String
+    BOLLI:String
   }
   type RigheConnection {
     cursor: String

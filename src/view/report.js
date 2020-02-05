@@ -47,6 +47,7 @@ export const RIGHE_DATA = gql`
         PAG_DESC
         DES_RIGA_DOC
         DEV_RIGA_DOC
+        BOLLI
       }
       cursor
       hasMore

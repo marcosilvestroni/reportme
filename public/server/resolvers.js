@@ -34,7 +34,7 @@ module.exports = {
         .getRighe(medico, pagamento, tipo, fromDate, toDate, branche, denti)
         .then(results => {
           let totalAmount = 0;
-          results.forEach(item => (totalAmount += item.PREZZO));
+          results.forEach(item => (totalAmount += item.PREZZO + item.BOLLI));
 
           const righe = paginateResults({
             after,

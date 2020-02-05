@@ -41,7 +41,8 @@ function Acconting({ data, typesDoc }) {
             return false;
           }),
           TOTALE: sumRows,
-          PAGAMENTO: head.PAG_DESC
+          PAGAMENTO: head.PAG_DESC,
+          BOLLI: head.BOLLI
         });
       }
     });
@@ -70,7 +71,13 @@ function Acconting({ data, typesDoc }) {
                     : ""}
                 </Table.HeaderCell>
                 <Table.HeaderCell>
-                  Totale prestazioni {parseCurrency(head.TOTALE)}
+                  Imponibile {parseCurrency(head.TOTALE)}
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  Bolli {parseCurrency(head.BOLLI)}
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  Totale {parseCurrency(parseFloat(head.TOTALE) + parseFloat(head.BOLLI))}
                 </Table.HeaderCell>
                 <Table.HeaderCell>Pagamento {head.PAGAMENTO}</Table.HeaderCell>
               </Table.Row>

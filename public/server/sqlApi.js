@@ -77,7 +77,8 @@ class sqlApi extends SQLDataSource {
         { PAG_COD: "CGXX_CONTI.CDA_CONTO" },
         { TIPO_FATTURA: "MGXX_DOCTST.CDA_MODULO" },
         { MEDICO_FATTURA: "MGXX_DOCTST_MEDICI.MED_ID" },
-        { PZ_FATTURA: "MGXX_DOCTST_MEDICI.CDA_INTEST" }
+        { PZ_FATTURA: "MGXX_DOCTST_MEDICI.CDA_INTEST" },
+        { BOLLI: "CAXX_IMPORTIFAT.VAL_VOCE_SPE_BOL" }
       )
       .column()
       .from("SCHEDE_RIGHE_FATT")
@@ -129,6 +130,17 @@ class sqlApi extends SQLDataSource {
           .andOn("MGXX_DOCRIG.NUM_ESER_CONT", "=", "MGXX_DOCTST.NUM_ESER_CONT")
           .andOn("MGXX_DOCRIG.CDA_SERIE_NUM", "=", "MGXX_DOCTST.CDA_SERIE_NUM")
           .andOn("MGXX_DOCRIG.PRG_DOC", "=", "MGXX_DOCTST.PRG_DOC");
+      })
+      .innerJoin("CAXX_IMPORTIFAT", function() {
+        this.on("CAXX_IMPORTIFAT.CDA_POLO_NUM", "=", "MGXX_DOCTST.CDA_POLO_NUM")
+          .andOn(
+            "CAXX_IMPORTIFAT.CDA_TIPO_DOC_NUM",
+            "=",
+            "MGXX_DOCTST.CDA_TIPO_DOC_NUM"
+          )
+          .andOn("CAXX_IMPORTIFAT.NUM_ESER_CONT", "=", "MGXX_DOCTST.NUM_ESER_CONT")
+          .andOn("CAXX_IMPORTIFAT.CDA_SERIE_NUM", "=", "MGXX_DOCTST.CDA_SERIE_NUM")
+          .andOn("CAXX_IMPORTIFAT.PRG_DOC", "=", "MGXX_DOCTST.PRG_DOC");
       })
       .innerJoin("MGXX_DOCTST_MEDICI", function() {
         this.on(
