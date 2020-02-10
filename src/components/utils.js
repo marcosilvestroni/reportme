@@ -11,7 +11,7 @@ export const parseCurrency = value => {
     .slice(0, indexComma)
     .reverse()
     .forEach((c, i) => {
-      if (i > 0 && i % 3 === 0) {
+      if (i > 0 && i % 3 === 0 && !isNaN(c)) {
         out.push(".");
       }
       out.push(c);

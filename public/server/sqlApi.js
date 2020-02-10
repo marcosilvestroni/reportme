@@ -138,8 +138,16 @@ class sqlApi extends SQLDataSource {
             "=",
             "MGXX_DOCTST.CDA_TIPO_DOC_NUM"
           )
-          .andOn("CAXX_IMPORTIFAT.NUM_ESER_CONT", "=", "MGXX_DOCTST.NUM_ESER_CONT")
-          .andOn("CAXX_IMPORTIFAT.CDA_SERIE_NUM", "=", "MGXX_DOCTST.CDA_SERIE_NUM")
+          .andOn(
+            "CAXX_IMPORTIFAT.NUM_ESER_CONT",
+            "=",
+            "MGXX_DOCTST.NUM_ESER_CONT"
+          )
+          .andOn(
+            "CAXX_IMPORTIFAT.CDA_SERIE_NUM",
+            "=",
+            "MGXX_DOCTST.CDA_SERIE_NUM"
+          )
           .andOn("CAXX_IMPORTIFAT.PRG_DOC", "=", "MGXX_DOCTST.PRG_DOC");
       })
       .innerJoin("MGXX_DOCTST_MEDICI", function() {
@@ -203,7 +211,12 @@ class sqlApi extends SQLDataSource {
         "CGXX_CONTI.CDA_CONTO"
       )
       .where(function() {
-        if (medico) this.where("schede_righe.MED_ID", "=", medico);
+        if (medico)
+          this.where("schede_righe.MED_ID", "=", medico).orWhere(
+            "MGXX_DOCTST_MEDICI.MED_ID",
+            "=",
+            medico
+          );
       })
       .andWhere(function() {
         if (pagamento) this.where("CGXX_CONTI.CDA_CONTO", "=", pagamento);
@@ -215,16 +228,18 @@ class sqlApi extends SQLDataSource {
         if (branche.length > 0) this.whereIn("schede_righe.BRANCA", branche);
       })
       .andWhere(function() {
-        if (fromDate) {
+        if (fromDate && !toDate) {
           const fd = new Date(fromDate);
-
+          /* const stringedFd = `${fd.getDate()}/${fd.getMonth() +
+            1}/${fd.getFullYear()}`; */
           this.where("CAXX_DOCTST.DAT_STP_DEFINITIVA", ">=", fd);
         }
       })
       .andWhere(function() {
-        if (toDate) {
+        if (toDate && !fromDate) {
           const td = new Date(toDate);
-
+          /* const stringedTd = `${td.getDate()}/${td.getMonth() +
+            1}/${td.getFullYear()}`; */
           this.where("CAXX_DOCTST.DAT_STP_DEFINITIVA", "<=", td);
         }
       })
@@ -232,7 +247,10 @@ class sqlApi extends SQLDataSource {
         if (fromDate && toDate) {
           const fd = new Date(fromDate);
           const td = new Date(toDate);
-
+          /* const stringedFd = `${fd.getDate()}/${fd.getMonth() +
+            1}/${fd.getFullYear()}`;
+          const stringedTd = `${td.getDate()}/${td.getMonth() +
+            1}/${td.getFullYear()}`; */
           this.where("CAXX_DOCTST.DAT_STP_DEFINITIVA", ">=", fd).andWhere(
             "CAXX_DOCTST.DAT_STP_DEFINITIVA",
             "<=",

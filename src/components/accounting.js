@@ -64,7 +64,7 @@ function Acconting({ data, typesDoc }) {
                   >
                     <Table.Cell>{row.NUMERO_RIGA}</Table.Cell>
                     <Table.Cell>
-                      {row.PAZIENTE.COGNOME} {row.PAZIENTE.NOME}
+                      {row.PAZIENTE && `${row.PAZIENTE.COGNOME} ${row.PAZIENTE.NOME}`}
                     </Table.Cell>
                     <Table.Cell>
                       {row.MEDICO && `${row.MEDICO.COGNOME} ${row.MEDICO.NOME}`}
