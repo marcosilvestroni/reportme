@@ -14,7 +14,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const ping = require("ping");
-const fallback = "192.168.1.80"; //"192.168.0.80";
+const fallback = "192.168.0.80"; //"192.168.0.80";
 
 
 

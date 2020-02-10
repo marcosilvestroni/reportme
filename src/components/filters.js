@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Header, Divider, Button } from "semantic-ui-react";
+import { Form, Header, Divider } from "semantic-ui-react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -57,7 +57,7 @@ const Filters = ({ update ,filters}) => {
     }
   };
 
-  const applyPresetBranche = preset => {
+  /* const applyPresetBranche = preset => {
     const withPreset = {
       poliambulatorio: () => {
         update({
@@ -102,7 +102,7 @@ const Filters = ({ update ,filters}) => {
     };
 
     withPreset[preset]();
-  };
+  }; */
 
   
   return (
@@ -223,7 +223,7 @@ const Filters = ({ update ,filters}) => {
             ></Form.Select>
           )}
         </Form.Group>
-        <Form.Group>
+        {/* <Form.Group>
           <Button.Group widths="2" basic>
             <Button onClick={() => applyPresetBranche("odontoiatria")}>
               Odontoiatria
@@ -232,7 +232,7 @@ const Filters = ({ update ,filters}) => {
               Poliambulatorio
             </Button>
           </Button.Group>
-        </Form.Group>
+        </Form.Group> */}
      </Form>
     </div>
   );

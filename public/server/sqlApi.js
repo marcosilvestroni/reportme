@@ -1,6 +1,6 @@
 const { SQLDataSource } = require("datasource-sql");
 
-const TIMING = 0;
+const TIMING = 60;
 
 class sqlApi extends SQLDataSource {
   getMedici(id) {
@@ -309,7 +309,8 @@ class sqlApi extends SQLDataSource {
       .orderBy([
         { column: "CAXX_DOCTST.DAT_STP_DEFINITIVA", order: "desc" },
         { column: "CAXX_DOCTST.NUM_FATTURA", order: "desc" }
-      ]);
+      ])
+      .cache(0);
   }
 }
 
