@@ -66,12 +66,11 @@ export const RIGHE_DATA = gql`
 export default () => {
   const [filters, updateFilters] = useState({});
   const { data, loading, fetchMore } = useQuery(RIGHE_DATA, {
-    variables: filters,
+    variables: filters
   });
-  
+
   let groupedRows = [];
   let marks = 0;
-  
 
   const groupRows = data => {
     const grouped = [];
@@ -85,7 +84,7 @@ export default () => {
         }) === -1
       ) {
         let sumRows = 0;
-        marks += parseInt(head.BOLLI)
+        marks += parseInt(head.BOLLI);
         grouped.push({
           NUM_FATTURA: head.NUM_FATTURA,
           DATA_FATTURA: head.DATA_FATTURA,
@@ -109,20 +108,28 @@ export default () => {
     return grouped;
   };
   if (data) {
-    groupedRows = groupRows(data.righe.righe)
+    groupedRows = groupRows(data.righe.righe);
   }
 
-  
   return (
     <Segment loading={loading}>
       <Grid divided columns="equal">
         <Grid.Column>
           <Filters update={updateFilters} filters={filters} />
         </Grid.Column>
-        <Grid.Column>{data && <Summary meta={{totalAmount:parseFloat(data.righe.meta.totalAmount)+parseFloat(marks)}} />}</Grid.Column>
+        <Grid.Column>
+          {data && (
+            <Summary
+              meta={{
+                totalAmount: parseFloat(data.righe.meta.totalAmount),
+                marks: parseFloat(marks)
+              }}
+            />
+          )}
+        </Grid.Column>
       </Grid>
 
-      {data && <Accounting data={groupedRows} typesDoc={data.tipoDocumenti}/>}
+      {data && <Accounting data={groupedRows} typesDoc={data.tipoDocumenti} />}
       {data && data.righe && data.righe.hasMore && (
         <Button
           onClick={() =>

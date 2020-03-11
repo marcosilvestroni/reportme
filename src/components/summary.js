@@ -19,7 +19,7 @@ export default ({ meta }) => {
             
             <Table.Row>
               <Table.Cell>
-                <Header as="h3">{"Totale"}</Header>
+                <Header as="h3">{"Prestazioni"}</Header>
               </Table.Cell>
               <Table.Cell textAlign="right">
                 <Header as="h3">{parseCurrency(meta.totalAmount)}</Header>
@@ -27,7 +27,23 @@ export default ({ meta }) => {
             </Table.Row>
             <Table.Row>
               <Table.Cell>
-                <Header as="h4">{"Applica percentuale"}</Header>
+                <Header as="h3">{"Bolli"}</Header>
+              </Table.Cell>
+              <Table.Cell textAlign="right">
+                <Header as="h3">{parseCurrency(meta.marks)}</Header>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Header as="h3">{"Totale"}</Header>
+              </Table.Cell>
+              <Table.Cell textAlign="right">
+                <Header as="h3">{parseCurrency((meta.totalAmount + meta.marks))}</Header>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Header as="h4">{"Applica percentuale sulle prestazioni"}</Header>
               </Table.Cell>
               <Table.Cell textAlign="right">
 
